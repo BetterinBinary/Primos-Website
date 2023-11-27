@@ -51,7 +51,7 @@
 
     .main h1{
         color: #e3b212;
-        font-size: 3rem;
+        font-size: 2rem;
         margin: 0;
     }
 
