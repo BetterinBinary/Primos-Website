@@ -23,6 +23,9 @@
             <button class=btn id={selected==='menu'?'selected':''} on:click={()=>selected='menu'}>Menu</button>
             <button class=btn id={selected==='info'?'selected':''} on:click={()=>selected='info'}>Info</button>
         </div>
+        {#if selected===null}
+            <img src="lions.png" class=ad alt="favicon.png">
+        {/if}
     </div>
     <div class=wrapper>
         {#if selected==='menu'}
@@ -49,6 +52,14 @@
         flex-direction: column;
         overflow-y: scroll;
         gap: 1rem;
+    }
+
+    .ad{
+        width: 70%;
+        height: 70%;
+        margin: 0;
+        margin-top: 1rem;
+        border-radius: 5px;
     }
 
     .wrapper{
