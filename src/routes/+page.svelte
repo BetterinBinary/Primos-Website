@@ -23,9 +23,6 @@
             <button class=btn id={selected==='menu'?'selected':''} on:click={()=>selected='menu'}>Menu</button>
             <button class=btn id={selected==='info'?'selected':''} on:click={()=>selected='info'}>Info</button>
         </div>
-        {#if selected===null}
-            <img src="lions.png" class=ad alt="favicon.png">
-        {/if}
     </div>
     <div class=wrapper>
         {#if selected==='menu'}
