@@ -8,6 +8,7 @@
     });
 
     let selected = null;
+    let inpVal = '';
 </script>
 
 <div class=main>
@@ -23,6 +24,10 @@
             <button class=btn id={selected==='menu'?'selected':''} on:click={()=>selected='menu'}>Menu</button>
             <button class=btn id={selected==='info'?'selected':''} on:click={()=>selected='info'}>Info</button>
         </div>
+        {#if selected===null}
+            <span class=label id=ad><h2>Enter your phone number or email below to receive deals and updates!</h2></span>
+            <input class=phone type="text" placeholder="Phone or Email" bind:value={inpVal}>
+        {/if}
     </div>
     <div class=wrapper>
         {#if selected==='menu'}
@@ -51,12 +56,25 @@
         gap: 1rem;
     }
 
-    .ad{
-        width: 70%;
-        height: 70%;
-        margin: 0;
-        margin-top: 1rem;
+    .phone {
+        background-color: azure;
+        border: none;
         border-radius: 5px;
+        padding: 0.5rem;
+        font-size: 1rem;
+        text-align: center;
+        width: 40%;
+        color: #253a80;
+        font-weight: bold;
+    }
+
+    #ad.label{
+        color: azure;
+        font-size: 1rem;
+        pointer-events: none;
+        text-decoration: none;
+        pointer-events: none;
+        text-decoration: none;
     }
 
     .wrapper{
