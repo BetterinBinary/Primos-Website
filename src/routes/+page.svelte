@@ -24,10 +24,12 @@
             <button class=btn id={selected==='menu'?'selected':''} on:click={()=>selected='menu'}>Menu</button>
             <button class=btn id={selected==='info'?'selected':''} on:click={()=>selected='info'}>Info</button>
         </div>
+       <!-- 
         {#if selected===null}
             <span class=label id=ad><h2>Enter your phone number or email below to receive deals and updates!</h2></span>
             <input class=phone type="text" placeholder="Phone or Email" bind:value={inpVal}>
         {/if}
+        -->
     </div>
     <div class=wrapper>
         {#if selected==='menu'}
