@@ -1,16 +1,34 @@
 <script>
   import MenuItem from "$lib/components/menu/MenuItem.svelte";
-  import pizzaData from "$lib/data/pizza.json";
+  import menuData from "$lib/data/menu.json";
 
   let searchQuery = $state("");
+  let selectedCategory = $state("all");
 
-  const filteredItems = $derived(
-    searchQuery.trim()
-      ? pizzaData.items.filter((item) =>
-          item.name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      : pizzaData.items
+  // Get all items from all categories
+  const allItems = menuData.categories.flatMap(category => 
+    category.items.map(item => ({ ...item, categoryId: category.id, categoryName: category.name }))
   );
+
+  // Filter items based on search and category
+  const filteredItems = $derived(() => {
+    let items = allItems;
+    
+    // Filter by category
+    if (selectedCategory !== "all") {
+      items = items.filter(item => item.categoryId === selectedCategory);
+    }
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      items = items.filter(item => 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    return items;
+  });
 
   function addToCart(item) {
     console.log("Adding to cart:", item);

@@ -1,12 +1,43 @@
 <script>
     let { item, onAddToCart } = $props();
-    let selectedModifiers = $state([]);
+    let selectedSize = $state(item.sizes?.[0] || null);
+    let selectedToppings = $state([]);
+    let selectedAddOns = $state([]);
     let quantity = $state(1);
 
-    const totalPrice = $derived(
-        (item.basePrice || 0) * quantity +
-            selectedModifiers.reduce((sum, mod) => sum + (mod.price || 0), 0),
+    const basePrice = $derived(
+        selectedSize ? selectedSize.price : (item.basePrice || 0)
     );
+
+    const toppingsPrice = $derived(
+        selectedToppings.reduce((sum, topping) => sum + (topping.price || 0), 0)
+    );
+
+    const addOnsPrice = $derived(
+        selectedAddOns.reduce((sum, addOn) => sum + (addOn.price || 0), 0)
+    );
+
+    const totalPrice = $derived(
+        (basePrice + toppingsPrice + addOnsPrice) * quantity
+    );
+
+    function toggleTopping(topping) {
+        const index = selectedToppings.findIndex(t => t.id === topping.id);
+        if (index > -1) {
+            selectedToppings.splice(index, 1);
+        } else {
+            selectedToppings.push(topping);
+        }
+    }
+
+    function toggleAddOn(addOn) {
+        const index = selectedAddOns.findIndex(a => a.id === addOn.id);
+        if (index > -1) {
+            selectedAddOns.splice(index, 1);
+        } else {
+            selectedAddOns.push(addOn);
+        }
+    }
 </script>
 
 <article

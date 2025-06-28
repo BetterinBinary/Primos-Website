@@ -1,4 +1,4 @@
-import { escape_html_attr } from '../../../utils/escape.js';
+import { escape_html } from '../../../utils/escape.js';
 import { hash } from '../../hash.js';
 
 /**
@@ -70,8 +70,12 @@ export function serialize_data(fetched, filter, prerendering = false) {
 	const attrs = [
 		'type="application/json"',
 		'data-sveltekit-fetched',
-		`data-url=${escape_html_attr(fetched.url)}`
+		`data-url="${escape_html(fetched.url, true)}"`
 	];
+
+	if (fetched.is_b64) {
+		attrs.push('data-b64');
+	}
 
 	if (fetched.request_headers || fetched.request_body) {
 		/** @type {import('types').StrictBody[]} */

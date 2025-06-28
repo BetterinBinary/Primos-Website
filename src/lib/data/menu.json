@@ -1,0 +1,274 @@
+{
+  "restaurant": {
+    "name": "Primos Pizza",
+    "description": "Authentic Italian cuisine with a modern twist, serving the finest pizzas, pasta, and more since our founding."
+  },
+  "categories": [
+    {
+      "id": "appetizers",
+      "name": "Appetizers",
+      "description": "Start your meal with our delicious appetizers, crafted with fresh ingredients and authentic Italian flavors.",
+      "displayOrder": 1,
+      "items": [
+        {
+          "id": "garlic_bread",
+          "name": "Garlic Bread",
+          "description": "Fresh baked Italian bread brushed with garlic butter, herbs, and parmesan cheese",
+          "basePrice": 8.99,
+          "allergens": ["dairy", "gluten"],
+          "available": true,
+          "image": "/images/garlic-bread.jpg",
+          "dietary": ["vegetarian"],
+          "prepTime": "5-8 minutes",
+          "posMapping": {
+            "category": "appetizers",
+            "type": "bread"
+          }
+        },
+        {
+          "id": "mozzarella_sticks",
+          "name": "Mozzarella Sticks",
+          "description": "Golden fried mozzarella cheese sticks served with our signature marinara sauce",
+          "basePrice": 10.99,
+          "allergens": ["dairy", "gluten", "eggs"],
+          "available": true,
+          "image": "/images/mozzarella-sticks.jpg",
+          "dietary": ["vegetarian"],
+          "prepTime": "8-10 minutes",
+          "posMapping": {
+            "category": "appetizers",
+            "type": "fried"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pizza",
+      "name": "Pizza",
+      "description": "Our signature hand-tossed pizzas made with fresh dough, premium ingredients, and baked to perfection in our brick oven.",
+      "displayOrder": 2,
+      "items": [
+        {
+          "id": "margherita_pizza",
+          "name": "Margherita Pizza",
+          "description": "A classic Italian pizza with fresh mozzarella, San Marzano tomato sauce, fresh basil, and extra virgin olive oil",
+          "basePrice": 14.99,
+          "allergens": ["dairy", "gluten"],
+          "available": true,
+          "image": "/images/margherita-pizza.jpg",
+          "dietary": ["vegetarian"],
+          "prepTime": "12-15 minutes",
+          "sizes": [
+            {"id": "small", "name": "Small (10\")", "price": 11.35},
+            {"id": "medium", "name": "Medium (12\")", "price": 14.99},
+            {"id": "large", "name": "Large (14\")", "price": 18.99}
+          ],
+          "toppings": [
+            {"id": "pepperoni", "name": "Pepperoni", "price": 2.50},
+            {"id": "mushrooms", "name": "Mushrooms", "price": 1.50},
+            {"id": "italian_sausage", "name": "Italian Sausage", "price": 2.75},
+            {"id": "bell_peppers", "name": "Bell Peppers", "price": 1.25},
+            {"id": "olives", "name": "Black Olives", "price": 1.50}
+          ],
+          "posMapping": {
+            "category": "pizza",
+            "type": "classic",
+            "sizeMap": {
+              "small": "small",
+              "medium": "medium",
+              "large": "large"
+            }
+          }
+        },
+        {
+          "id": "primos_supreme",
+          "name": "Primo's Supreme",
+          "description": "Our signature loaded pizza with pepperoni, Italian sausage, mushrooms, bell peppers, red onions, and black olives",
+          "basePrice": 19.99,
+          "allergens": ["dairy", "gluten"],
+          "available": true,
+          "image": "/images/primos-supreme.jpg",
+          "prepTime": "15-18 minutes",
+          "sizes": [
+            {"id": "small", "name": "Small (10\")", "price": 16.99},
+            {"id": "medium", "name": "Medium (12\")", "price": 19.99},
+            {"id": "large", "name": "Large (14\")", "price": 24.99},
+            {"id": "xlarge", "name": "X-Large (18\")", "price": 29.99}
+          ],
+          "posMapping": {
+            "category": "pizza",
+            "type": "specialty",
+            "sizeMap": {
+              "small": "small",
+              "medium": "medium",
+              "large": "large",
+              "xlarge": "xlarge"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "pasta",
+      "name": "Pasta",
+      "description": "Traditional Italian pasta dishes made with imported Italian pasta and authentic sauces prepared fresh daily.",
+      "displayOrder": 3,
+      "items": [
+        {
+          "id": "spaghetti_carbonara",
+          "name": "Spaghetti Carbonara",
+          "description": "Classic Roman pasta with pancetta, eggs, pecorino romano cheese, and freshly cracked black pepper",
+          "basePrice": 16.99,
+          "allergens": ["dairy", "gluten", "eggs"],
+          "available": true,
+          "image": "/images/spaghetti-carbonara.jpg",
+          "prepTime": "12-15 minutes",
+          "posMapping": {
+            "category": "pasta",
+            "type": "cream_sauce"
+          }
+        },
+        {
+          "id": "penne_arrabbiata",
+          "name": "Penne Arrabbiata",
+          "description": "Spicy penne pasta in a fiery tomato sauce with garlic, red chili peppers, and fresh parsley",
+          "basePrice": 14.99,
+          "allergens": ["gluten"],
+          "available": true,
+          "image": "/images/penne-arrabbiata.jpg",
+          "dietary": ["vegan", "spicy"],
+          "prepTime": "10-12 minutes",
+          "spiceLevel": 3,
+          "posMapping": {
+            "category": "pasta",
+            "type": "tomato_sauce"
+          }
+        }
+      ]
+    },
+    {
+      "id": "salads",
+      "name": "Salads",
+      "description": "Fresh, crisp salads made with locally sourced greens and house-made dressings.",
+      "displayOrder": 4,
+      "items": [
+        {
+          "id": "caesar_salad",
+          "name": "Caesar Salad",
+          "description": "Crisp romaine lettuce, parmesan cheese, croutons, and our house-made Caesar dressing",
+          "basePrice": 12.99,
+          "allergens": ["dairy", "gluten", "eggs", "anchovies"],
+          "available": true,
+          "image": "/images/caesar-salad.jpg",
+          "dietary": ["vegetarian"],
+          "prepTime": "5-7 minutes",
+          "addOns": [
+            {"id": "grilled_chicken", "name": "Grilled Chicken", "price": 4.99},
+            {"id": "grilled_shrimp", "name": "Grilled Shrimp", "price": 6.99}
+          ],
+          "posMapping": {
+            "category": "salads",
+            "type": "classic"
+          }
+        }
+      ]
+    },
+    {
+      "id": "beverages",
+      "name": "Beverages",
+      "description": "Refreshing drinks to complement your meal, from classic sodas to Italian specialty beverages.",
+      "displayOrder": 5,
+      "items": [
+        {
+          "id": "coca_cola",
+          "name": "Coca-Cola",
+          "description": "Classic Coca-Cola served ice cold",
+          "basePrice": 2.99,
+          "allergens": [],
+          "available": true,
+          "image": "/images/coca-cola.jpg",
+          "sizes": [
+            {"id": "small", "name": "Small (12 oz)", "price": 2.99},
+            {"id": "medium", "name": "Medium (16 oz)", "price": 3.49},
+            {"id": "large", "name": "Large (20 oz)", "price": 3.99}
+          ],
+          "posMapping": {
+            "category": "beverages",
+            "type": "soda"
+          }
+        },
+        {
+          "id": "san_pellegrino",
+          "name": "San Pellegrino Sparkling Water",
+          "description": "Premium Italian sparkling mineral water",
+          "basePrice": 3.99,
+          "allergens": [],
+          "available": true,
+          "image": "/images/san-pellegrino.jpg",
+          "sizes": [
+            {"id": "bottle", "name": "Bottle (330ml)", "price": 3.99}
+          ],
+          "posMapping": {
+            "category": "beverages",
+            "type": "water"
+          }
+        }
+      ]
+    },
+    {
+      "id": "desserts",
+      "name": "Desserts",
+      "description": "Indulgent Italian desserts to complete your dining experience, made fresh in-house daily.",
+      "displayOrder": 6,
+      "items": [
+        {
+          "id": "tiramisu",
+          "name": "Tiramisu",
+          "description": "Traditional Italian dessert with layers of espresso-soaked ladyfingers, mascarpone cream, and cocoa powder",
+          "basePrice": 7.99,
+          "allergens": ["dairy", "gluten", "eggs", "caffeine"],
+          "available": true,
+          "image": "/images/tiramisu.jpg",
+          "dietary": ["vegetarian"],
+          "prepTime": "2-3 minutes",
+          "posMapping": {
+            "category": "desserts",
+            "type": "classic"
+          }
+        },
+        {
+          "id": "cannoli",
+          "name": "Sicilian Cannoli",
+          "description": "Crispy pastry shells filled with sweet ricotta cream, chocolate chips, and pistachios",
+          "basePrice": 6.99,
+          "allergens": ["dairy", "gluten", "nuts"],
+          "available": true,
+          "image": "/images/cannoli.jpg",
+          "dietary": ["vegetarian"],
+          "prepTime": "2-3 minutes",
+          "quantity": "2 pieces",
+          "posMapping": {
+            "category": "desserts",
+            "type": "pastry"
+          }
+        }
+      ]
+    }
+  ],
+  "menuSettings": {
+    "lastUpdated": "2024-12-28",
+    "currency": "USD",
+    "taxRate": 0.0875,
+    "serviceCharge": 0.18,
+    "allergenWarning": "Please inform your server of any allergies or dietary restrictions. Our kitchen handles nuts, gluten, dairy, and other allergens.",
+    "kitchenHours": {
+      "monday": {"open": "11:00", "close": "22:00"},
+      "tuesday": {"open": "11:00", "close": "22:00"},
+      "wednesday": {"open": "11:00", "close": "22:00"},
+      "thursday": {"open": "11:00", "close": "22:00"},
+      "friday": {"open": "11:00", "close": "23:00"},
+      "saturday": {"open": "11:00", "close": "23:00"},
+      "sunday": {"open": "12:00", "close": "21:00"}
+    }
+  }
+}
