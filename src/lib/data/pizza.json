@@ -1,0 +1,57 @@
+{
+  "category": "pizza",
+  "name": "Pizza",
+  "description": "Our signature hand-tossed pizzas",
+  "items": [
+    {
+      "id": "margherita_pizza",
+      "name": "Margherita Pizza",
+      "description": "Fresh mozzarella, tomato sauce, basil",
+      "basePrice": 14.99,
+      "allergens": ["dairy", "gluten"],
+      "available": true,
+      "sizes": [
+        {"id": "small", "name": "Small (10\")", "price": 11.35},
+        {"id": "medium", "name": "Medium (12\")", "price": 14.99},
+        {"id": "large", "name": "Large (14\")", "price": 18.99}
+      ],
+      "toppings": [
+        {"id": "pepperoni", "name": "Pepperoni", "price": 2.50},
+        {"id": "mushrooms", "name": "Mushrooms", "price": 1.50}
+      ],
+      "posMapping": {
+        "category": "pizza",
+        "type": "round_square",
+        "sizeMap": {
+          "small": "small",
+          "medium": "medium",
+          "large": "large"
+        }
+      }
+    },
+    {
+      "id": "bbq_chicken_pizza",
+      "name": "BBQ Chicken Pizza",
+      "description": "Cheese, Chicken, Red Onion, Bacon, BBQ Sauce (No Pizza Sauce)",
+      "basePrice": 17.88,
+      "allergens": ["dairy", "gluten"],
+      "available": true,
+      "sizes": [
+        {"id": "small", "name": "Small (10\")", "price": 14.53},
+        {"id": "medium", "name": "Medium (12\")", "price": 17.88},
+        {"id": "large", "name": "Large (14\")", "price": 21.56},
+        {"id": "xlarge", "name": "X-Large (18\")", "price": 26.04}
+      ],
+      "posMapping": {
+        "category": "pizza",
+        "type": "specialty",
+        "sizeMap": {
+          "small": "small",
+          "medium": "medium",
+          "large": "large",
+          "xlarge": "xlarge"
+        }
+      }
+    }
+  ]
+} 
