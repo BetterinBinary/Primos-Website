@@ -1,7 +1,13 @@
-<script>
+<script lang="ts">
   import MenuItem from './MenuItem.svelte';
+  import type { MenuCategory, MenuItem as MenuItemType } from '$lib/types/menu';
   
-  let { category, onAddToCart } = $props();
+  interface Props {
+    category: MenuCategory;
+    onAddToCart: (item: MenuItemType) => void;
+  }
+  
+  let { category, onAddToCart }: Props = $props();
 </script>
 
 <section class="mb-12">

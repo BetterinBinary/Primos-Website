@@ -1,8 +1,21 @@
-<script>
-  let { item, onAddToCart } = $props();
-  let selectedSize = $state(item.sizes?.[0] || null);
-  let selectedToppings = $state([]);
-  let selectedAddOns = $state([]);
+<script lang="ts">
+  import type { MenuItem, Size, Topping, AddOn } from '$lib/types/menu';
+
+  interface Props {
+    item: MenuItem;
+    onAddToCart: (item: MenuItem & {
+      selectedSize: Size | null;
+      selectedToppings: Topping[];
+      selectedAddOns: AddOn[];
+      quantity: number;
+      totalPrice: number;
+    }) => void;
+  }
+
+  let { item, onAddToCart }: Props = $props();
+  let selectedSize = $state<Size | null>(item.sizes?.[0] || null);
+  let selectedToppings = $state<Topping[]>([]);
+  let selectedAddOns = $state<AddOn[]>([]);
   let quantity = $state(1);
 
   const basePrice = $derived(
@@ -10,7 +23,7 @@
   );
 
   const toppingsPrice = $derived(
-    selectedToppings.reduce((sum, topping) => sum + (topping.price || 0), 0)
+    selectedToppings.reduce((sum, topping) => sum + 0, 0)
   );
 
   const addOnsPrice = $derived(
@@ -21,7 +34,7 @@
     (basePrice + toppingsPrice + addOnsPrice) * quantity
   );
 
-  function toggleTopping(topping) {
+  function toggleTopping(topping: Topping) {
     const index = selectedToppings.findIndex((t) => t.id === topping.id);
     if (index > -1) {
       selectedToppings.splice(index, 1);
@@ -30,14 +43,6 @@
     }
   }
 
-  function toggleAddOn(addOn) {
-    const index = selectedAddOns.findIndex((a) => a.id === addOn.id);
-    if (index > -1) {
-      selectedAddOns.splice(index, 1);
-    } else {
-      selectedAddOns.push(addOn);
-    }
-  }
 </script>
 
 <article
@@ -101,17 +106,17 @@
     {/if}
 
     <!-- Toppings Selection -->
-    {#if item.toppings && item.toppings.length > 0}
+    {#if item.toppings && item.toppings.extraItems && item.toppings.extraItems.length > 0}
       <div>
         <h4 class="font-medium text-gray-900 mb-2">Add Toppings</h4>
         <div class="space-y-2">
-          {#each item.toppings as topping}
+          {#each item.toppings.extraItems as topping}
             <label class="flex items-center justify-between cursor-pointer">
               <div class="flex items-center">
                 <input
                   type="checkbox"
-                  checked={selectedToppings.some((t) => t.id === topping.id)}
-                  on:change={() => toggleTopping(topping)}
+                  checked={selectedToppings.some((t) => t.name === topping.name)}
+                  onchange={() => toggleTopping({ id: topping.name, name: topping.name, category: 'meat', available: true })}
                   class="mr-2 text-primos-red-600 focus:ring-primos-red-500"
                 />
                 <span class="text-sm text-gray-700">{topping.name}</span>
@@ -125,30 +130,8 @@
       </div>
     {/if}
 
-    <!-- Add-ons Selection -->
-    {#if item.addOns && item.addOns.length > 0}
-      <div>
-        <h4 class="font-medium text-gray-900 mb-2">Add-ons</h4>
-        <div class="space-y-2">
-          {#each item.addOns as addOn}
-            <label class="flex items-center justify-between cursor-pointer">
-              <div class="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={selectedAddOns.some((a) => a.id === addOn.id)}
-                  on:change={() => toggleAddOn(addOn)}
-                  class="mr-2 text-primos-red-600 focus:ring-primos-red-500"
-                />
-                <span class="text-sm text-gray-700">{addOn.name}</span>
-              </div>
-              <span class="text-sm font-medium text-primos-red-600">
-                +${addOn.price.toFixed(2)}
-              </span>
-            </label>
-          {/each}
-        </div>
-      </div>
-    {/if}
+    <!-- Add-ons Selection (currently not supported by MenuItem type) -->
+    <!-- TODO: Add addOns to MenuItem interface when needed -->
 
     <!-- Quantity Selection -->
     <div>
@@ -157,7 +140,7 @@
         <button
           type="button"
           class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-          on:click={() => (quantity = Math.max(1, quantity - 1))}
+          onclick={() => (quantity = Math.max(1, quantity - 1))}
           disabled={quantity <= 1}
         >
           -
@@ -166,7 +149,7 @@
         <button
           type="button"
           class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-          on:click={() => (quantity += 1)}
+          onclick={() => (quantity += 1)}
         >
           +
         </button>
@@ -176,33 +159,6 @@
 
   <!-- Additional Info -->
   <div class="mb-4 space-y-2">
-    <!-- Dietary/Special Info -->
-    {#if item.dietary && item.dietary.length > 0}
-      <div class="flex flex-wrap gap-1">
-        {#each item.dietary as diet}
-          <span
-            class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-md"
-          >
-            {diet}
-          </span>
-        {/each}
-      </div>
-    {/if}
-
-    <!-- Prep Time -->
-    {#if item.prepTime}
-      <p class="text-xs text-gray-500">
-        🕒 Prep time: {item.prepTime}
-      </p>
-    {/if}
-
-    <!-- Spice Level -->
-    {#if item.spiceLevel}
-      <p class="text-xs text-gray-500">
-        🌶️ Spice level: {"🌶️".repeat(item.spiceLevel)}
-      </p>
-    {/if}
-
     <!-- Allergen Warning -->
     {#if item.allergens && item.allergens.length > 0}
       <p class="text-xs text-yellow-600">

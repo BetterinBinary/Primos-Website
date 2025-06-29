@@ -1,0 +1,9 @@
+[
+  { "id": "bbq", "name": "BBQ", "available": true },
+  { "id": "hot-sauce", "name": "Hot Sauce", "spiceLevel": 3, "available": true },
+  { "id": "ranch", "name": "Ranch", "available": true },
+  { "id": "honey-mustard", "name": "Honey Mustard", "available": true },
+  { "id": "blue-cheese", "name": "Blue Cheese", "available": true },
+  { "id": "pizza-sauce", "name": "Pizza Sauce", "available": true },
+  { "id": "marinara", "name": "Marinara", "available": true }
+]

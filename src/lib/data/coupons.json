@@ -1,0 +1,39 @@
+[
+  {
+    "id": "dollar-off-pizza",
+    "deal": "$1.00 OFF Any Size Pizza",
+    "sizes": "Small, Medium, Large or X-Large",
+    "restrictions": "Pickup ONLY • One Coupon Per Order",
+    "location": "7 Mile Location Only",
+    "phone": "248-476-4260",
+    "expires": "6-31-24"
+  },
+  {
+    "id": "two-medium-pizzas",
+    "deal": "Two Medium Pizzas - Cheese & 1-3 Items",
+    "price": "$29.49 Plus Tax",
+    "bonus": "+ FREE 2 Liter Pop",
+    "restrictions": "One Coupon Per Order",
+    "location": "7 Mile Location Only",
+    "phone": "248-476-4260",
+    "expires": "6-31-24"
+  },
+  {
+    "id": "dollar-off-dinner",
+    "deal": "$1.00 OFF Any Dinner",
+    "description": "Off Regular Menu Price",
+    "restrictions": "Pickup ONLY • One Coupon Per Order",
+    "location": "7 Mile Location Only",
+    "phone": "248-476-4260",
+    "expires": "6-31-24"
+  },
+  {
+    "id": "large-pizza-wings",
+    "deal": "Large 2 Item Pizza Plus 12 Wing Dings",
+    "price": "$26.99 Plus Tax",
+    "restrictions": "One Coupon Per Order",
+    "location": "7 Mile Location Only",
+    "phone": "248-476-4260",
+    "expires": "6-31-24"
+  }
+]

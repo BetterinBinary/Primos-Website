@@ -1,0 +1,19 @@
+{
+  "name": "Primo's Pizza",
+  "phone": "248-476-4260",
+  "address": "33521 W. Seven Mile Rd, Just West of Farmington Rd",
+  "location": "Livonia, Michigan",
+  "established": "Since 1968",
+  "website": "www.primoslivonia.com",
+  "hours": {
+    "Monday-Tuesday": "4pm-10pm",
+    "Wednesday, Thursday, Sunday": "4pm-12 Mid",
+    "Friday-Saturday": "4pm-2am"
+  },
+  "awards": [
+    "Awarded Livonia Small Business of the Year 2017",
+    "Voted One of the Top 25 Pizzas in Metro Detroit Area by Detroit Free Press, August 27, 2009"
+  ],
+  "paymentMethods": ["Visa", "MasterCard", "American Express", "Discover"],
+  "services": ["Delivery", "Pickup", "U-Bake Pizza"]
+}

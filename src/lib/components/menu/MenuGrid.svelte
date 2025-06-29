@@ -1,0 +1,167 @@
+<script>
+  import MenuItem from './MenuItem.svelte';
+  import LoadingSpinner from '../ui/LoadingSpinner.svelte';
+  
+  let { 
+    items = [], 
+    searchQuery = '',
+    selectedCategory = '',
+    loading = false,
+    onAddToCart 
+  } = $props();
+
+  // Filter items based on search query and category
+  const filteredItems = $derived(() => {
+    let filtered = items;
+    
+    // Filter by category if selected
+    if (selectedCategory && selectedCategory !== 'all') {
+      filtered = filtered.filter(item => item.category === selectedCategory);
+    }
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(item =>
+        item.name.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query) ||
+        (item.allergens && item.allergens.some(allergen => 
+          allergen.toLowerCase().includes(query)
+        ))
+      );
+    }
+    
+    // Only show available items
+    return filtered.filter(item => item.available);
+  });
+
+  // Group items by category for better organization
+  const groupedItems = $derived(() => {
+    const groups = new Map();
+    
+    filteredItems.forEach(item => {
+      if (!groups.has(item.category)) {
+        groups.set(item.category, []);
+      }
+      groups.get(item.category).push(item);
+    });
+    
+    return groups;
+  });
+
+  // Calculate grid columns based on number of items
+  const gridCols = $derived(() => {
+    const itemCount = filteredItems.length;
+    if (itemCount === 1) return 'grid-cols-1 max-w-md mx-auto';
+    if (itemCount === 2) return 'grid-cols-1 sm:grid-cols-2 max-w-4xl mx-auto';
+    return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+  });
+</script>
+
+<section class="menu-grid py-8">
+  {#if loading}
+    <div class="flex justify-center items-center py-12">
+      <LoadingSpinner />
+    </div>
+  {:else if filteredItems.length === 0}
+    <!-- Empty state -->
+    <div class="text-center py-12">
+      <div class="mb-4">
+        <span class="text-6xl text-gray-300">🍽️</span>
+      </div>
+      
+      {#if searchQuery.trim()}
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+          No items found
+        </h3>
+        <p class="text-gray-500 mb-4">
+          No menu items match "<strong>{searchQuery}</strong>"
+          {#if selectedCategory && selectedCategory !== 'all'}
+            in the {selectedCategory} category
+          {/if}
+        </p>
+        <button
+          class="text-primos-red-600 hover:text-primos-red-700 font-medium"
+          onclick={() => {
+            searchQuery = '';
+            selectedCategory = 'all';
+          }}
+        >
+          Clear filters
+        </button>
+      {:else if selectedCategory && selectedCategory !== 'all'}
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+          No items available
+        </h3>
+        <p class="text-gray-500 mb-4">
+          No items are currently available in the {selectedCategory} category
+        </p>
+      {:else}
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+          No items available
+        </h3>
+        <p class="text-gray-500">
+          Please check back later for menu updates
+        </p>
+      {/if}
+    </div>
+  {:else}
+    <!-- Menu items grid -->
+    {#if selectedCategory === 'all' || !selectedCategory}
+      <!-- Show grouped by categories when viewing all -->
+      {#each [...groupedItems.entries()] as [category, categoryItems]}
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 capitalize">
+            {category.replace('-', ' ')}
+          </h2>
+          
+          <div class="grid {gridCols} gap-6">
+            {#each categoryItems as item (item.id)}
+              <div class="min-h-full">
+                <MenuItem {item} {onAddToCart} />
+              </div>
+            {/each}
+          </div>
+        </div>
+      {/each}
+    {:else}
+      <!-- Show flat grid when viewing specific category -->
+      <div class="grid {gridCols} gap-6">
+        {#each filteredItems as item (item.id)}
+          <div class="min-h-full">
+            <MenuItem {item} {onAddToCart} />
+          </div>
+        {/each}
+      </div>
+    {/if}
+    
+    <!-- Results count -->
+    <div class="mt-8 text-center">
+      <p class="text-sm text-gray-500">
+        Showing {filteredItems.length} 
+        {filteredItems.length === 1 ? 'item' : 'items'}
+        {#if searchQuery.trim()}
+          matching "{searchQuery}"
+        {/if}
+        {#if selectedCategory && selectedCategory !== 'all'}
+          in {selectedCategory}
+        {/if}
+      </p>
+    </div>
+  {/if}
+</section>
+
+<style>
+  .menu-grid {
+    @apply container mx-auto px-4;
+  }
+  
+  /* Ensure consistent card heights in grid */
+  .grid > * {
+    @apply flex;
+  }
+  
+  .grid > * > :global(.menu-item) {
+    @apply flex-1;
+  }
+</style>

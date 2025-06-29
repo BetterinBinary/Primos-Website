@@ -1,0 +1,23 @@
+[
+  { "id": "pepperoni", "name": "Pepperoni", "category": "meat", "available": true },
+  { "id": "bacon", "name": "Bacon", "category": "meat", "available": true },
+  { "id": "hamburger", "name": "Hamburger", "category": "meat", "available": true },
+  { "id": "ham", "name": "Ham", "category": "meat", "available": true },
+  { "id": "italian-sausage", "name": "Italian Sausage", "category": "meat", "available": true },
+  { "id": "chicken", "name": "Chicken", "category": "meat", "available": true },
+  { "id": "green-pepper", "name": "Green Pepper", "category": "vegetable", "available": true },
+  { "id": "mushrooms", "name": "Mushrooms", "category": "vegetable", "available": true },
+  { "id": "onions", "name": "Onions", "category": "vegetable", "available": true },
+  { "id": "sweet-red-onions", "name": "Sweet Red Onions", "category": "vegetable", "available": true },
+  { "id": "spinach", "name": "Spinach", "category": "vegetable", "available": true },
+  { "id": "artichoke", "name": "Artichoke", "category": "vegetable", "available": true },
+  { "id": "broccoli", "name": "Broccoli", "category": "vegetable", "available": true },
+  { "id": "sliced-tomatoes", "name": "Sliced Tomatoes", "category": "vegetable", "available": true },
+  { "id": "mild-banana-peppers", "name": "Mild Banana Peppers", "category": "vegetable", "available": true },
+  { "id": "jalapenos", "name": "Jalapeños", "category": "vegetable", "available": true },
+  { "id": "anchovies", "name": "Anchovies", "category": "seafood", "available": true },
+  { "id": "green-olives", "name": "Green Olives", "category": "vegetable", "available": true },
+  { "id": "black-olives", "name": "Black Olives", "category": "vegetable", "available": true },
+  { "id": "pineapple", "name": "Pineapple", "category": "fruit", "available": true },
+  { "id": "feta-cheese", "name": "Feta Cheese", "category": "cheese", "available": true }
+]

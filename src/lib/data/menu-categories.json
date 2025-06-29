@@ -1,0 +1,337 @@
+[
+  {
+    "id": "appetizers",
+    "name": "Appetizers & Side Orders",
+    "description": "Start your meal with our delicious appetizers and sides",
+    "items": [
+      {
+        "id": "cole-slaw",
+        "name": "Cole Slaw (Pint)",
+        "description": "Fresh creamy coleslaw made daily",
+        "basePrice": 2.12,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "onion-rings",
+        "name": "Onion Rings",
+        "description": "Golden battered onion rings served hot and crispy",
+        "basePrice": 4.67,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "french-fries",
+        "name": "French Fries",
+        "description": "Crispy golden french fries",
+        "basePrice": 2.83,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "pizza-slice",
+        "name": "Pizza by the Slice",
+        "description": "Single slice of our delicious pizza",
+        "basePrice": 3.54,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "deep-fried-mushrooms",
+        "name": "Deep Fried Mushrooms",
+        "description": "Fresh mushrooms coated in seasoned batter and fried to perfection",
+        "basePrice": 4.76,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "seasoned-potato-wedges",
+        "name": "Seasoned Potato Wedges",
+        "description": "Crispy potato wedges with our special seasoning blend",
+        "basePrice": 4.29,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "garlic-sticks-half-dozen",
+        "name": "Garlic Sticks (1/2 Dozen)",
+        "description": "Six freshly baked garlic breadsticks",
+        "basePrice": 2.78,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "garlic-sticks-dozen",
+        "name": "Garlic Sticks (1 Dozen)",
+        "description": "Twelve freshly baked garlic breadsticks",
+        "basePrice": 4.25,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "garlic-sticks-half-dozen-cheese",
+        "name": "Garlic Sticks (1/2 Dozen) with Baked Mozzarella",
+        "description": "Six garlic breadsticks topped with melted mozzarella cheese",
+        "basePrice": 4.58,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "garlic-sticks-dozen-cheese",
+        "name": "Garlic Sticks (1 Dozen) with Baked Mozzarella",
+        "description": "Twelve garlic breadsticks topped with melted mozzarella cheese",
+        "basePrice": 7.59,
+        "category": "appetizers",
+        "available": true
+      },
+      {
+        "id": "deep-fried-cheese-stix",
+        "name": "Deep Fried Cheese Stix",
+        "description": "Mozzarella cheese sticks breaded and fried until golden",
+        "basePrice": 5.19,
+        "category": "appetizers",
+        "available": true
+      }
+    ]
+  },
+  {
+    "id": "pizza",
+    "name": "Pizza",
+    "description": "Our signature hand-tossed pizzas made fresh daily",
+    "items": [
+      {
+        "id": "cheese-pizza-round",
+        "name": "Cheese Pizza (Round)",
+        "description": "Classic cheese pizza with our signature sauce and mozzarella",
+        "category": "pizza",
+        "basePrice": 13.07,
+        "sizes": [
+          { "size": "small", "name": "Small 12\"/8pc", "price": 10.71 },
+          { "size": "medium", "name": "Medium 14\"/10pc", "price": 13.07 },
+          { "size": "large", "name": "Large 16\"/12pc", "price": 16.04 },
+          { "size": "xlarge", "name": "X-Large 18\"/14pc", "price": 19.67 }
+        ],
+        "toppings": {
+          "extraItems": [
+            { "size": "small", "price": 1.27 },
+            { "size": "medium", "price": 1.60 },
+            { "size": "large", "price": 1.84 },
+            { "size": "xlarge", "price": 2.12 }
+          ]
+        },
+        "available": true
+      },
+      {
+        "id": "cheese-pizza-square",
+        "name": "Cheese Pizza (Square)",
+        "description": "Classic square-cut cheese pizza with our signature sauce and mozzarella",
+        "category": "pizza",
+        "basePrice": 13.07,
+        "sizes": [
+          { "size": "small", "name": "Small 7\"x9\"/6pc", "price": 10.71 },
+          { "size": "medium", "name": "Medium 9\"x13\"/10pc", "price": 13.07 },
+          { "size": "large", "name": "Large 11\"x16\"/12pc", "price": 16.04 }
+        ],
+        "toppings": {
+          "extraItems": [
+            { "size": "small", "price": 1.27 },
+            { "size": "medium", "price": 1.60 },
+            { "size": "large", "price": 1.84 }
+          ]
+        },
+        "available": true
+      },
+      {
+        "id": "bbq-chicken-pizza",
+        "name": "BBQ Chicken",
+        "description": "Cheese, Chicken, Red Onion, Bacon, BBQ Sauce (No Pizza Sauce)",
+        "category": "pizza",
+        "basePrice": 17.88,
+        "sizes": [
+          { "size": "small", "name": "Small 12\"/8pc", "price": 14.53 },
+          { "size": "medium", "name": "Medium 14\"/10pc", "price": 17.88 },
+          { "size": "large", "name": "Large 16\"/12pc", "price": 21.56 },
+          { "size": "xlarge", "name": "X-Large 18\"/14pc", "price": 26.04 }
+        ],
+        "available": true
+      },
+      {
+        "id": "hawaiian-pizza",
+        "name": "Hawaiian",
+        "description": "Pizza Sauce, Cheese, Ham, Pineapple",
+        "category": "pizza",
+        "basePrice": 16.27,
+        "sizes": [
+          { "size": "small", "name": "Small 12\"/8pc", "price": 13.25 },
+          { "size": "medium", "name": "Medium 14\"/10pc", "price": 16.27 },
+          { "size": "large", "name": "Large 16\"/12pc", "price": 19.72 },
+          { "size": "xlarge", "name": "X-Large 18\"/14pc", "price": 23.92 }
+        ],
+        "available": true
+      },
+      {
+        "id": "blt-pizza",
+        "name": "BLT",
+        "description": "No Sauce, Bacon, Tomato, Shredded Lettuce, Cheese, Mayo on Side",
+        "category": "pizza",
+        "basePrice": 17.88,
+        "sizes": [
+          { "size": "small", "name": "Small 12\"/8pc", "price": 14.53 },
+          { "size": "medium", "name": "Medium 14\"/10pc", "price": 17.88 },
+          { "size": "large", "name": "Large 16\"/12pc", "price": 21.56 },
+          { "size": "xlarge", "name": "X-Large 18\"/14pc", "price": 26.04 }
+        ],
+        "available": true
+      },
+      {
+        "id": "primos-special-pizza",
+        "name": "Primo's Special",
+        "description": "Cheese, Pepperoni, Ham, Mushrooms, Green Pepper, Bacon, Onions (Anchovies on Request)",
+        "category": "pizza",
+        "basePrice": 21.23,
+        "sizes": [
+          { "size": "small", "name": "Small 12\"/8pc", "price": 16.98 },
+          { "size": "medium", "name": "Medium 14\"/10pc", "price": 21.23 },
+          { "size": "large", "name": "Large 16\"/12pc", "price": 25.05 },
+          { "size": "xlarge", "name": "X-Large 18\"/14pc", "price": 30.28 }
+        ],
+        "available": true
+      },
+      {
+        "id": "primos-supreme-pizza",
+        "name": "Primo's Supreme",
+        "description": "Pepperoni, Ham, Bacon, Hamburger, Green Pepper, Mushrooms, Italian Sausage, Onions, Hot Peppers (Anchovies on Request)",
+        "category": "pizza",
+        "basePrice": 22.88,
+        "sizes": [
+          { "size": "small", "name": "Small 12\"/8pc", "price": 18.25 },
+          { "size": "medium", "name": "Medium 14\"/10pc", "price": 22.88 },
+          { "size": "large", "name": "Large 16\"/12pc", "price": 26.84 },
+          { "size": "xlarge", "name": "X-Large 18\"/14pc", "price": 32.41 }
+        ],
+        "available": true
+      },
+      {
+        "id": "green-pizza",
+        "name": "Green Pizza",
+        "description": "No Sauce, Cheese, Spinach, Minced Garlic, Oil, Salt and Pepper",
+        "category": "pizza",
+        "basePrice": 14.67,
+        "sizes": [
+          { "size": "small", "name": "Small 12\"/8pc", "price": 11.98 },
+          { "size": "medium", "name": "Medium 14\"/10pc", "price": 14.67 },
+          { "size": "large", "name": "Large 16\"/12pc", "price": 17.88 },
+          { "size": "xlarge", "name": "X-Large 18\"/14pc", "price": 21.79 }
+        ],
+        "available": true
+      }
+    ]
+  },
+  {
+    "id": "salads",
+    "name": "Salads",
+    "description": "Fresh salads made daily with crisp vegetables. All salads served with dressing on the side.",
+    "items": [
+      {
+        "id": "tossed-salad",
+        "name": "Tossed Salad",
+        "description": "Fresh lettuce, tomatoes, cucumbers, and onions",
+        "category": "salads",
+        "sizes": [
+          { "size": "small", "name": "Small", "price": 5.09 },
+          { "size": "medium", "name": "Medium", "price": 7.08 },
+          { "size": "large", "name": "Large", "price": 9.29 }
+        ],
+        "available": true
+      },
+      {
+        "id": "antipasto-salad",
+        "name": "Antipasto Salad",
+        "description": "Mixed greens with ham, salami, cheese, tomatoes, peppers, and olives",
+        "category": "salads",
+        "sizes": [
+          { "size": "small", "name": "Small", "price": 5.61 },
+          { "size": "medium", "name": "Medium", "price": 8.29 },
+          { "size": "large", "name": "Large", "price": 11.46 }
+        ],
+        "available": true
+      },
+      {
+        "id": "greek-salad",
+        "name": "Greek Salad",
+        "description": "Fresh greens with feta cheese, olives, tomatoes, and Greek dressing",
+        "category": "salads",
+        "sizes": [
+          { "size": "small", "name": "Small", "price": 5.61 },
+          { "size": "medium", "name": "Medium", "price": 9.29 },
+          { "size": "large", "name": "Large", "price": 11.46 }
+        ],
+        "available": true
+      },
+      {
+        "id": "grilled-chicken-salad",
+        "name": "Grilled Chicken Salad",
+        "description": "Grilled Chicken, Lettuce, Tomato, Sweet Red Onion, Cucumber & Provolone Cheese",
+        "category": "salads",
+        "sizes": [
+          { "size": "small", "name": "Small", "price": 7.08 },
+          { "size": "medium", "name": "Medium", "price": 10.33 },
+          { "size": "large", "name": "Large", "price": 13.59 }
+        ],
+        "available": true
+      }
+    ],
+    "addOns": [
+      {
+        "name": "Add Chicken to Any Salad",
+        "sizes": [
+          { "size": "small", "price": 1.75 },
+          { "size": "medium", "price": 2.03 },
+          { "size": "large", "price": 2.22 }
+        ]
+      }
+    ],
+    "dressings": ["Ranch", "Creamy Italian", "Italian", "French", "1,000 Island", "Greek", "Blue Cheese"]
+  },
+  {
+    "id": "desserts",
+    "name": "Desserts",
+    "description": "Sweet treats to complete your meal",
+    "items": [
+      {
+        "id": "cheese-cake",
+        "name": "Cheese Cake",
+        "description": "Creamy cheesecake with choice of strawberry or cherry topping",
+        "category": "desserts",
+        "basePrice": 6.25,
+        "options": ["Strawberry", "Cherry"],
+        "available": true
+      },
+      {
+        "id": "cookies",
+        "name": "Cookies",
+        "description": "Fresh-baked cookies in three varieties",
+        "category": "desserts",
+        "basePrice": 2.00,
+        "options": ["Oatmeal", "Chocolate Chip", "White Chocolate Macadamia Nut"],
+        "available": true
+      },
+      {
+        "id": "oreo-pie",
+        "name": "Oreo Pie",
+        "description": "Rich chocolate pie with Oreo cookie crust and topping",
+        "category": "desserts",
+        "basePrice": 6.25,
+        "available": true
+      },
+      {
+        "id": "smores-cookie",
+        "name": "S'mores Cookie",
+        "description": "Large cookie with graham cracker, chocolate, and marshmallow",
+        "category": "desserts",
+        "basePrice": 3.00,
+        "available": true
+      }
+    ]
+  }
+]

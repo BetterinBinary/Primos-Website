@@ -1,0 +1,518 @@
+{
+    "restaurantInfo": {
+        "name": "Primo's Pizza",
+        "phone": "248-476-4260",
+        "address": "33521 W. Seven Mile Rd, Just West of Farmington Rd",
+        "location": "Livonia, Michigan",
+        "established": "Since 1968",
+        "website": "www.primoslivonia.com",
+        "hours": {
+            "Monday-Tuesday": "4pm-10pm",
+            "Wednesday, Thursday, Sunday": "4pm-12 Mid",
+            "Friday-Saturday": "4pm-2am"
+        },
+        "awards": [
+            "Awarded Livonia Small Business of the Year 2017",
+            "Voted One of the Top 25 Pizzas in Metro Detroit Area by Detroit Free Press, August 27, 2009"
+        ],
+        "paymentMethods": [
+            "Visa",
+            "MasterCard",
+            "American Express",
+            "Discover"
+        ],
+        "services": [
+            "Delivery",
+            "Pickup",
+            "U-Bake Pizza"
+        ]
+    },
+    "pizzas": {
+        "specialty": {
+            "BBQ Chicken": {
+                "description": "Cheese, Chicken, Red Onion, Bacon, BBQ Sauce (No Pizza Sauce)",
+                "prices": {
+                    "small": 14.53,
+                    "medium": 17.88,
+                    "large": 21.56,
+                    "xlarge": 26.04
+                }
+            },
+            "Hawaiian": {
+                "description": "Pizza Sauce, Cheese, Ham, Pineapple",
+                "prices": {
+                    "small": 13.25,
+                    "medium": 16.27,
+                    "large": 19.72,
+                    "xlarge": 23.92
+                }
+            },
+            "BLT": {
+                "description": "No Sauce, Bacon, Tomato, Shredded Lettuce, Cheese, Mayo on Side",
+                "prices": {
+                    "small": 14.53,
+                    "medium": 17.88,
+                    "large": 21.56,
+                    "xlarge": 26.04
+                }
+            },
+            "Primo's Special": {
+                "description": "Cheese, Pepperoni, Ham, Mushrooms, Green Pepper, Bacon, Onions (Anchovies on Request)",
+                "prices": {
+                    "small": 16.98,
+                    "medium": 21.23,
+                    "large": 25.05,
+                    "xlarge": 30.28
+                }
+            },
+            "Primo's Supreme": {
+                "description": "Pepperoni, Ham, Bacon, Hamburger, Green Pepper, Mushrooms, Italian Sausage, Onions, Hot Peppers (Anchovies on Request)",
+                "prices": {
+                    "small": 18.25,
+                    "medium": 22.88,
+                    "large": 26.84,
+                    "xlarge": 32.41
+                }
+            },
+            "Green Pizza": {
+                "description": "No Sauce, Cheese, Spinach, Minced Garlic, Oil, Salt and Pepper",
+                "prices": {
+                    "small": 11.98,
+                    "medium": 14.67,
+                    "large": 17.88,
+                    "xlarge": 21.79
+                }
+            }
+        },
+        "round": {
+            "sizes": {
+                "small": "12\"/8pc",
+                "medium": "14\"/10pc",
+                "large": "16\"/12pc",
+                "xlarge": "18\"/14pc"
+            },
+            "cheese": {
+                "small": 10.71,
+                "medium": 13.07,
+                "large": 16.04,
+                "xlarge": 19.67
+            },
+            "extraItems": {
+                "small": 1.27,
+                "medium": 1.60,
+                "large": 1.84,
+                "xlarge": 2.12
+            }
+        },
+        "square": {
+            "sizes": {
+                "small": "7\"x9\"/6pc",
+                "medium": "9\"x13\"/10pc",
+                "large": "11\"x16\"/12pc"
+            },
+            "cheese": {
+                "small": 10.71,
+                "medium": 13.07,
+                "large": 16.04
+            },
+            "extraItems": {
+                "small": 1.27,
+                "medium": 1.60,
+                "large": 1.84
+            }
+        },
+        "tray": {
+            "size": "18x24",
+            "cheese": 24.53,
+            "extraItems": 3.58,
+            "primosSpecial": 42.50,
+            "primosSupreme": 46.13
+        },
+        "stuffed": {
+            "cheese": 6.98,
+            "extraItems": 0.47,
+            "primosSpecial": 11.93,
+            "primosSupreme": 12.92
+        },
+        "uBake": {
+            "sizes": {
+                "small": "13\"x9\"",
+                "large": "18\"x13\""
+            },
+            "cheese": {
+                "small": 6.85,
+                "large": 9.60
+            },
+            "extraItems": {
+                "small": 1.00,
+                "large": 1.50
+            },
+            "primosSpecial": {
+                "small": 11.85,
+                "large": 17.10
+            },
+            "primosSupreme": {
+                "small": 13.35,
+                "large": 19.35
+            }
+        }
+    },
+    "toppings": [
+        "Pepperoni",
+        "Bacon",
+        "Hamburger",
+        "Green Pepper",
+        "Anchovies",
+        "Green Olives",
+        "Ham",
+        "Mushrooms",
+        "Black Olives",
+        "Italian Sausage",
+        "Onions",
+        "Pineapple",
+        "Sliced Tomatoes",
+        "Mild Banana Peppers",
+        "Spinach",
+        "Artichoke",
+        "Sweet Red Onions",
+        "Chicken",
+        "Broccoli",
+        "Feta Cheese",
+        "Jalapeños"
+    ],
+    "salads": {
+        "items": {
+            "Tossed": {
+                "small": 5.09,
+                "medium": 7.08,
+                "large": 9.29
+            },
+            "Antipasto": {
+                "small": 5.61,
+                "medium": 8.29,
+                "large": 11.46
+            },
+            "Greek": {
+                "small": 5.61,
+                "medium": 9.29,
+                "large": 11.46
+            },
+            "Grilled Chicken": {
+                "description": "Grilled Chicken, Lettuce, Tomato, Sweet Red Onion, Cucumber & Provolone Cheese",
+                "prices": {
+                    "small": 7.08,
+                    "medium": 10.33,
+                    "large": 13.59
+                }
+            }
+        },
+        "addOns": {
+            "Add Chicken to Any Salad": {
+                "small": 1.75,
+                "medium": 2.03,
+                "large": 2.22
+            }
+        },
+        "dressings": [
+            "Ranch",
+            "Creamy Italian",
+            "Italian",
+            "French",
+            "1,000 Island",
+            "Greek",
+            "Blue Cheese"
+        ],
+        "note": "All Salads Served with Dressing on the Side"
+    },
+    "sideOrders": {
+        "Cole Slaw (Pint)": 2.12,
+        "Onion Rings": 4.67,
+        "French Fries": 2.83,
+        "Pizza by the Slice": 3.54,
+        "Deep Fried Mushrooms": 4.76,
+        "Seasoned Potato Wedges": 4.29,
+        "Garlic Sticks (1/2 Dozen)": 2.78,
+        "1 Dozen": 4.25,
+        "1/2 Dozen with Baked Mozzarella": 4.58,
+        "1 Dozen with Baked Mozzarella": 7.59,
+        "Deep Fried Cheese Stix": 5.19,
+        "Pizza Sauce": 0.52,
+        "Ranch": 0.94,
+        "Garlic Cheese": 1.51,
+        "Extra Roll": 0.33,
+        "Extra Garlic Stick": 0.52
+    },
+    "bbqRibs": {
+        "Whole Slab (for two)": {
+            "price": 26.13,
+            "includes": "Slaw, Fries, Rolls & Sauces"
+        },
+        "Short Ends (9 bones)": {
+            "price": 14.20,
+            "includes": "2 Orders of Fries, 2 Rolls & Pint of Slaw"
+        },
+        "Long Ends (9 bones)": 12.88,
+        "Rib Snacks (5bones)": 10.42
+    },
+    "broastedChicken": {
+        "note": "ALL WHITE, ALL DARK - NO CHARGE • BBQ'D ADDITIONAL 10¢ PER PIECE",
+        "items": {
+            "Chicken Dinner (4 pc.)": 11.89,
+            "Chicken Snack (2 pc.)": 8.73,
+            "8 Pieces": 19.30,
+            "12 Pieces": 26.13,
+            "16 Pieces": 28.87,
+            "20 Pieces": 32.64,
+            "24 Pieces": 36.37
+        },
+        "includes": "Slaw, Fries, Rolls & Honey",
+        "includesLarge": "2 Orders of Fries, 2 Rolls & Pint of Slaw"
+    },
+    "chickenTenderloins": {
+        "includes": "FRIES, ROLL & COLE SLAW",
+        "items": {
+            "6 Pieces": 11.84,
+            "12 Pieces": 19.06,
+            "18 Pieces": 25.00,
+            "24 Pieces": 30.14
+        },
+        "sauces": [
+            "BBQ",
+            "Hot Sauce",
+            "Ranch",
+            "Honey Mustard",
+            "Blue Cheese"
+        ]
+    },
+    "wingDings": {
+        "includes": "2 GARLIC STIX & FRIES",
+        "items": {
+            "6 Wing Dings": 7.03,
+            "12 Wing Dings": 12.97,
+            "24 Wing Dings": 22.64,
+            "36 Wing Dings": 33.87
+        },
+        "sauces": [
+            "BBQ",
+            "Hot Sauce",
+            "Ranch",
+            "Honey Mustard",
+            "Blue Cheese"
+        ]
+    },
+    "combinationPlates": {
+        "includes": "SLAW, FRIES, ROLLS & SAUCE",
+        "items": {
+            "Ribs & Chicken": 14.58,
+            "Ribs & Shrimp": 14.58,
+            "Chicken & Fish": 12.50,
+            "Ribs & Fish": 14.58,
+            "Shrimp & Frog Legs": 15.24,
+            "Primo Smorgasbord": {
+                "price": 20.57,
+                "description": "Chicken, Shrimp, Ribs, Frog Legs"
+            }
+        }
+    },
+    "seafood": {
+        "includes": "SLAW, FRIES, ROLLS & SAUCES",
+        "items": {
+            "Lake Perch (6 pcs.)": 12.12,
+            "21 Shrimp in the Basket": 12.12,
+            "Shrimp Dinner (7 pcs.)": 13.49,
+            "Fish Snack (2 pcs.)": 9.20,
+            "Fish & Chips (4 pcs.)": 12.50,
+            "Jumbo Frog Legs": 15.61,
+            "Cod 10 Piece Basket": {
+                "price": 25.47,
+                "includes": "2 Orders of Fries, 2 Rolls & Pint of Slaw"
+            }
+        },
+        "sauces": [
+            "BBQ",
+            "Hot Sauce",
+            "Ranch",
+            "Honey Mustard",
+            "Blue Cheese"
+        ]
+    },
+    "handBatteredShrimp": {
+        "includes": "SLAW, FRIES, ROLLS & SAUCES",
+        "regularOrCajun": {
+            "1/4 lb.": 10.99,
+            "1/2 lb.": 15.57,
+            "3/4 lb.": 20.05,
+            "1 lb.": 27.03
+        },
+        "bucketOfJumboShrimp": {
+            "price": 27.50,
+            "description": "(16 pcs.) Shrimp, Fries, Roll & Cole Slaw"
+        }
+    },
+    "submarines": {
+        "Chicken Parmesan Sub": {
+            "price": 11.84,
+            "description": "Cheese, Provolone, Marinara, Romano Cheese"
+        },
+        "Chicken Tender Sub": {
+            "price": 11.84,
+            "description": "Lettuce, Tomato, Onions, Creamy Italian Dressing"
+        },
+        "Italian": {
+            "price": 9.43,
+            "description": "Ham, Cheese, 2 Salami, Lettuce, Tomato, Onions, Creamy Italian Dressing"
+        },
+        "Turkey": {
+            "price": 9.43,
+            "description": "Lettuce, Tomato, Onions, Creamy Italian Dressing"
+        },
+        "Steak & Cheese": {
+            "price": 11.84,
+            "description": "Lettuce, Tomato, Onions, Creamy Italian Dressing"
+        },
+        "Steak & Cheese with Mushrooms": 12.59,
+        "Ham & Cheese": {
+            "price": 9.43,
+            "description": "Lettuce, Tomato, Onions, Creamy Italian Dressing"
+        },
+        "Pizza": {
+            "price": 9.43,
+            "description": "Pepperoni, Ham, Cheese, Onions & Sauce"
+        },
+        "Vegetarian": {
+            "price": 9.43,
+            "description": "Cheese, Mushrooms, Green Peppers, Black Olives, Lettuce, Tomato, Onions, Creamy Italian Dressing"
+        },
+        "Meatball": 9.95,
+        "Deluxe": {
+            "price": 9.95,
+            "description": "Ham, Turkey, 2 Salami, Cheese, Lettuce, Tomato, Onions, Creamy Italian Dressing"
+        }
+    },
+    "sandwiches": {
+        "Fish Sandwich": 5.61,
+        "Fish Sandwich Deluxe": {
+            "price": 7.31,
+            "includes": "Slaw & Fries"
+        },
+        "1/2 lb. Charburger": 8.11,
+        "Charburger Deluxe": {
+            "price": 10.47,
+            "includes": "Slaw & Fries"
+        },
+        "Cheese": 0.90
+    },
+    "pasta": {
+        "note": "Meatsauce or Marinara Sauce",
+        "dinnerIncludes": "Roll, Hard Breadsticks & Romano Cheese",
+        "extras": {
+            "Add a Small Tossed Salad": 2.45,
+            "Add Baked Cheese To Any Pasta": {
+                "pint": 2.31,
+                "quart": 3.16,
+                "bucket": 4.95
+            }
+        },
+        "spaghettiMostaccioli": {
+            "sizes": {
+                "pint": "(1 Serving)",
+                "quart": "(1-2 Servings)"
+            },
+            "items": {
+                "basic": {
+                    "pint": 7.22,
+                    "quart": 11.65
+                },
+                "with Mushrooms": {
+                    "pint": 7.92,
+                    "quart": 12.88
+                },
+                "with Meatballs": {
+                    "pint": 8.49,
+                    "quart": 13.59
+                },
+                "with Meatballs & Mushrooms": {
+                    "pint": 9.62,
+                    "quart": 14.72
+                }
+            },
+            "bucket": {
+                "Bucket of Spaghetti or Mostaccioli (serves 3-5)": 26.84,
+                "Add Meatballs (4)": 4.10,
+                "Add Mushrooms": 2.26
+            }
+        },
+        "ravioli": {
+            "type": "(Meat or Cheese)",
+            "sizes": {
+                "pint": "(1 Serving)",
+                "quart": "(1-2 Servings)"
+            },
+            "items": {
+                "basic": {
+                    "pint": 8.21,
+                    "quart": 12.41
+                },
+                "with Mushrooms": {
+                    "pint": 8.77,
+                    "quart": 13.30
+                },
+                "with Meatballs": {
+                    "pint": 9.10,
+                    "quart": 14.10
+                },
+                "with Meatballs & Mushrooms": {
+                    "pint": 9.81,
+                    "quart": 15.19
+                }
+            },
+            "bucket": {
+                "Bucket of Ravioli (serves 3-5)": 27.83,
+                "Add Meatballs (4)": 4.10,
+                "Add Mushrooms": 2.26
+            }
+        },
+        "Lasagna": 14.06
+    },
+    "desserts": {
+        "Cheese Cake (Strawberry & Cherry)": 6.25,
+        "Cookies (Oatmeal, Chocolate Chip & White Chocolate Macadamia Nut)": 2.00,
+        "Oreo Pie": 6.25,
+        "S'mores Cookie": 3.00
+    },
+    "coupons": [
+        {
+            "deal": "$1.00 OFF Any Size Pizza",
+            "sizes": "Small, Medium, Large or X-Large",
+            "restrictions": "Pickup ONLY • One Coupon Per Order",
+            "location": "7 Mile Location Only",
+            "phone": "248-476-4260",
+            "expires": "6-31-24"
+        },
+        {
+            "deal": "Two Medium Pizzas - Cheese & 1-3 Items",
+            "price": "$29.49 Plus Tax",
+            "bonus": "+ FREE 2 Liter Pop",
+            "restrictions": "One Coupon Per Order",
+            "location": "7 Mile Location Only",
+            "phone": "248-476-4260",
+            "expires": "6-31-24"
+        },
+        {
+            "deal": "$1.00 OFF Any Dinner",
+            "description": "Off Regular Menu Price",
+            "restrictions": "Pickup ONLY • One Coupon Per Order",
+            "location": "7 Mile Location Only",
+            "phone": "248-476-4260",
+            "expires": "6-31-24"
+        },
+        {
+            "deal": "Large 2 Item Pizza Plus 12 Wing Dings",
+            "price": "$26.99 Plus Tax",
+            "restrictions": "One Coupon Per Order",
+            "location": "7 Mile Location Only",
+            "phone": "248-476-4260",
+            "expires": "6-31-24"
+        }
+    ]
+}

@@ -1,17 +1,17 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import Menu from "../components/Menu.svelte";
   import Info from "../components/Info.svelte";
 
   onMount(() => {});
 
-  let selected = null;
+  let selected: string | null = null;
   let inpVal = "";
 </script>
 
 <div class="main">
   <div class="title-div">
-    <button class="title" on:click={() => (selected = null)}
+    <button class="title" onclick={() => (selected = null)}
       ><h1>Primo's Pizza</h1></button
     >
     {#if selected === null}
@@ -24,12 +24,12 @@
       <button
         class="btn"
         id={selected === "menu" ? "selected" : ""}
-        on:click={() => (selected = "menu")}>Menu</button
+        onclick={() => (selected = "menu")}>Menu</button
       >
       <button
         class="btn"
         id={selected === "info" ? "selected" : ""}
-        on:click={() => (selected = "info")}>Info</button
+        onclick={() => (selected = "info")}>Info</button
       >
       <a href="/menu" class="btn">New Menu</a>
     </div>
