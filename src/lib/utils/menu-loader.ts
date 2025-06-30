@@ -23,10 +23,13 @@ export class MenuLoader {
 
   public async loadMenuData(): Promise<MenuData> {
     if (this._menuData) {
+      console.log('📁 Using cached menu data');
       return this._menuData;
     }
 
     try {
+      console.log('🔄 Loading raw menu data from JSON files...');
+      
       const menuData: MenuData = {
         restaurant: restaurantInfoData as RestaurantInfo,
         categories: categoriesData as MenuCategory[],
@@ -35,11 +38,23 @@ export class MenuLoader {
         coupons: couponsData as Coupon[]
       };
 
+      console.log('📋 Raw data loaded:', {
+        restaurant: menuData.restaurant?.name,
+        categories: menuData.categories?.length,
+        toppings: menuData.toppings?.length,
+        sauces: menuData.sauces?.length,
+        coupons: menuData.coupons?.length
+      });
+
+      console.log('🔍 Validating menu data...');
       // Validate the loaded data
       this._menuData = validateMenuData(menuData);
+      console.log('✅ Menu data validation completed successfully');
+      
       return this._menuData;
     } catch (error) {
-      console.error('Failed to load menu data:', error);
+      console.error('❌ Failed to load menu data:', error);
+      console.error('Error type:', error instanceof Error ? error.constructor.name : typeof error);
       throw new Error(`Menu data loading failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }

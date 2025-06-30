@@ -1,0 +1,274 @@
+import { menuLoader } from '../utils/menu-loader.js';
+
+/**
+ * @typedef {import('../types/menu.js').MenuData} MenuData
+ * @typedef {import('../types/menu.js').MenuItem} MenuItem
+ * @typedef {import('../types/menu.js').MenuCategory} MenuCategory
+ */
+
+/**
+ * Menu Store using Svelte 5 runes for reactive state management
+ * Handles menu data, search, filtering, and category selection
+ */
+
+// Create the menu store
+function createMenuStore() {
+  // Core menu data state
+  let menuData = $state(null);
+  let loading = $state(true);
+  let error = $state(null);
+
+  // Search and filter state
+  let searchQuery = $state('');
+  let selectedCategory = $state('all');
+  let viewMode = $state('grid');
+
+  // Debounced search query for performance
+  let debouncedSearchQuery = $state('');
+  let searchTimeout;
+
+  // Initialize menu data with enhanced logging
+  async function initializeMenuData() {
+    try {
+      console.log('🍕 Starting menu data initialization...');
+      loading = true;
+      error = null;
+      
+      console.log('📊 Loading menu data from menuLoader...');
+      menuData = await menuLoader.loadMenuData();
+      console.log('✅ Menu data loaded successfully:', {
+        categories: menuData?.categories?.length || 0,
+        restaurant: menuData?.restaurant?.name || 'Unknown'
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load menu data';
+      error = errorMessage;
+      console.error('❌ Menu data initialization error:', err);
+      console.error('Error details:', {
+        message: errorMessage,
+        stack: err instanceof Error ? err.stack : 'No stack trace'
+      });
+    } finally {
+      loading = false;
+      console.log('🏁 Menu initialization completed. Loading:', loading, 'Error:', error);
+    }
+  }
+
+  // Search functionality with debouncing
+  function updateSearchQuery(query) {
+    searchQuery = query;
+    
+    // Clear existing timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    
+    // Set new timeout for debounced search
+    searchTimeout = setTimeout(() => {
+      debouncedSearchQuery = query;
+    }, 300); // 300ms debounce delay
+  }
+
+  // Category selection
+  function selectCategory(categoryId) {
+    selectedCategory = categoryId;
+  }
+
+  // View mode toggle
+  function setViewMode(mode) {
+    viewMode = mode;
+  }
+
+  // Derived state for all menu items with category info
+  const allMenuItems = $derived(() => {
+    if (!menuData) return [];
+    
+    return menuData.categories.flatMap((category) =>
+      category.items.map((item) => ({
+        ...item,
+        categoryId: category.id,
+        categoryName: category.name,
+      }))
+    );
+  });
+
+  // Derived state for filtered menu items
+  const filteredMenuItems = $derived(() => {
+    if (!menuData) return [];
+    
+    let items = allMenuItems();
+    
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      items = items.filter((item) => item.categoryId === selectedCategory);
+    }
+    
+    // Filter by search query (debounced)
+    if (debouncedSearchQuery.trim()) {
+      const query = debouncedSearchQuery.toLowerCase();
+      items = items.filter((item) =>
+        item.name.toLowerCase().includes(query) ||
+        item.description?.toLowerCase().includes(query) ||
+        item.categoryName.toLowerCase().includes(query)
+      );
+    }
+    
+    // Only return available items
+    return items.filter((item) => item.available);
+  });
+
+  // Derived state for available categories
+  const availableCategories = $derived(() => {
+    if (!menuData) return [];
+    
+    return menuData.categories.filter((category) => 
+      category.items.some((item) => item.available)
+    );
+  });
+
+  // Derived state for filtered categories (for category view)
+  const filteredCategories = $derived(() => {
+    if (!menuData) return [];
+    
+    if (debouncedSearchQuery.trim() || selectedCategory !== 'all') {
+      // Group filtered items back into categories
+      const categoryMap = new Map();
+      
+      filteredMenuItems().forEach((item) => {
+        if (!categoryMap.has(item.categoryId)) {
+          const originalCategory = menuData.categories.find(
+            (c) => c.id === item.categoryId
+          );
+          categoryMap.set(item.categoryId, {
+            ...originalCategory,
+            items: [],
+          });
+        }
+        categoryMap.get(item.categoryId).items.push(item);
+      });
+      
+      return Array.from(categoryMap.values());
+    } else {
+      // Show all categories with available items
+      return availableCategories();
+    }
+  });
+
+  // Search suggestions based on menu items
+  const searchSuggestions = $derived(() => {
+    if (!menuData || !searchQuery.trim() || searchQuery.length < 2) return [];
+    
+    const query = searchQuery.toLowerCase();
+    const suggestions = new Set();
+    
+    menuData.categories.forEach((category) => {
+      category.items.forEach((item) => {
+        if (item.available) {
+          // Add item name if it matches
+          if (item.name.toLowerCase().includes(query)) {
+            suggestions.add(item.name);
+          }
+          
+          // Add category name if it matches
+          if (category.name.toLowerCase().includes(query)) {
+            suggestions.add(category.name);
+          }
+        }
+      });
+    });
+    
+    return Array.from(suggestions).slice(0, 8); // Limit to 8 suggestions
+  });
+
+  // Statistics derived state
+  const menuStats = $derived(() => {
+    if (!menuData) return { totalItems: 0, totalCategories: 0, filteredItems: 0 };
+    
+    return {
+      totalItems: allMenuItems().length,
+      totalCategories: availableCategories().length,
+      filteredItems: filteredMenuItems().length,
+    };
+  });
+
+  // Utility functions
+  function getMenuItemById(itemId) {
+    if (!menuData) return null;
+    return menuLoader.getMenuItemById(itemId);
+  }
+
+  function getCategoryById(categoryId) {
+    if (!menuData) return null;
+    return menuLoader.getCategoryById(categoryId);
+  }
+
+  function resetFilters() {
+    selectedCategory = 'all';
+    searchQuery = '';
+    debouncedSearchQuery = '';
+  }
+
+  function getItemsByCategory(categoryId) {
+    if (!menuData) return [];
+    return menuLoader.getMenuItemsByCategory(categoryId);
+  }
+
+  return {
+    // State getters
+    get menuData() { return menuData; },
+    get loading() { return loading; },
+    get error() { return error; },
+    get searchQuery() { return searchQuery; },
+    get selectedCategory() { return selectedCategory; },
+    get viewMode() { return viewMode; },
+    get debouncedSearchQuery() { return debouncedSearchQuery; },
+    get allMenuItems() { return allMenuItems(); },
+    get filteredMenuItems() { return filteredMenuItems(); },
+    get availableCategories() { return availableCategories(); },
+    get filteredCategories() { return filteredCategories(); },
+    get searchSuggestions() { return searchSuggestions(); },
+    get menuStats() { return menuStats(); },
+    
+    // Actions
+    initializeMenuData,
+    updateSearchQuery,
+    selectCategory,
+    setViewMode,
+    getMenuItemById,
+    getCategoryById,
+    resetFilters,
+    getItemsByCategory
+  };
+}
+
+// Export the menu store instance
+export const menu = createMenuStore();
+
+// Export reactive properties and functions for convenience
+export const menuData = () => menu.menuData;
+export const loading = () => menu.loading;
+export const error = () => menu.error;
+export const searchQuery = () => menu.searchQuery;
+export const selectedCategory = () => menu.selectedCategory;
+export const viewMode = () => menu.viewMode;
+export const debouncedSearchQuery = () => menu.debouncedSearchQuery;
+export const allMenuItems = () => menu.allMenuItems;
+export const filteredMenuItems = () => menu.filteredMenuItems;
+export const availableCategories = () => menu.availableCategories;
+export const filteredCategories = () => menu.filteredCategories;
+export const searchSuggestions = () => menu.searchSuggestions;
+export const menuStats = () => menu.menuStats;
+
+// Export action functions directly
+export const {
+  initializeMenuData,
+  updateSearchQuery,
+  selectCategory,
+  setViewMode,
+  getMenuItemById,
+  getCategoryById,
+  resetFilters,
+  getItemsByCategory
+} = menu;
+
+// Note: Initialization is now handled by components to avoid race conditions

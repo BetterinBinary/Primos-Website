@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Primos Pizza website is a sophisticated SvelteKit 5 application currently in migration from static menu images to a dynamic, POS-ready ordering system. The project leverages modern Svelte 5 runes for state management, comprehensive TypeScript typing, and is architected for seamless integration with existing POS systems.
 
-**Current Status**: Migration in progress on `migration` branch with enhanced component architecture and testing infrastructure completed.
+**Current Status**: Dynamic menu system completed on `migration` branch with comprehensive state management, cart functionality, and responsive UI. Core architecture stable and ready for POS integration phase.
 
 ## Build Commands
 
@@ -42,11 +42,13 @@ npm run test:watch -- --grep "Button Component"
 - **Menu Components** (`src/lib/components/menu/`): MenuItem, MenuCategory with Svelte 5 runes for dynamic pricing
 
 ### State Management
-Uses modern Svelte 5 runes pattern:
+Uses modern Svelte 5 runes pattern with dedicated stores:
+- **Menu Store** (`src/lib/stores/menu-store.svelte.js`): Search, filtering, category selection with debounced queries
+- **Cart Store** (`src/lib/stores/cart-store.svelte.js`): Cart management with localStorage persistence
 - `$state()` for reactive variables
-- `$derived()` for computed values
+- `$derived()` for computed values  
 - `$props()` for component properties
-- `$effect()` for side effects
+- **Important**: Avoid `$effect()` in stores to prevent orphan errors; use manual persistence calls instead
 
 ### TypeScript Integration
 - **Menu Types** (`src/lib/types/menu.ts`): Complete type definitions for MenuItem, Category, CartItem
@@ -130,6 +132,47 @@ These resources complement the project-specific patterns documented in this file
 </script>
 ```
 
+### Store Import Pattern
+```javascript
+// Import from .svelte.js files for runes support
+import {
+  menuData,
+  filteredMenuItems,
+  updateSearchQuery,
+  selectCategory
+} from '$lib/stores/menu-store.svelte.js';
+
+import {
+  addToCart,
+  cartSummary,
+  toggleCart
+} from '$lib/stores/cart-store.svelte.js';
+```
+
+### localStorage Persistence Pattern
+```javascript
+// Manual persistence to avoid $effect orphan errors
+function addToCart(item, options = {}) {
+  // ... cart logic
+  cartItems = [...cartItems, cartItem];
+  
+  // Manual save call instead of $effect
+  saveCartToStorage(cartItems);
+  return true;
+}
+
+// Safe localStorage access with error handling
+function saveCartToStorage(items) {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  } catch (error) {
+    console.warn('Failed to save cart to localStorage:', error);
+  }
+}
+```
+
 ### Testing Pattern
 ```javascript
 import { render, screen } from '@testing-library/svelte/svelte5';
@@ -144,12 +187,16 @@ test('component renders correctly', () => {
 ## Migration Context
 
 ### Current Phase
-The project is in active migration from static menu images to dynamic components. Key accomplishments:
-- ✅ SvelteKit 5 project structure with enhanced-img integration
+Dynamic menu system migration completed successfully. Key accomplishments:
+- ✅ SvelteKit 5 project structure with stable image handling
 - ✅ Comprehensive component architecture with TypeScript
 - ✅ Tailwind CSS with Primos brand integration
 - ✅ Testing infrastructure with Vitest and Svelte Testing Library
 - ✅ Pricing calculation system with tax and delivery fee logic
+- ✅ Svelte 5 runes state management with menu and cart stores
+- ✅ Dynamic menu display with search, filtering, and category navigation
+- ✅ Cart functionality with localStorage persistence
+- ✅ Responsive grid/list view with smooth transitions
 
 ### Next Phase Requirements
 - POS system integration with DTO pattern
@@ -188,21 +235,54 @@ The project is in active migration from static menu images to dynamic components
 
 ### Image Handling
 ```svelte
-<!-- Use enhanced:img for automatic optimization -->
-<enhanced:img
+<!-- Use regular img tags for dynamic paths (enhanced:img conflicts with template strings) -->
+<img
   src="/images/menu/{item.image}"
   alt="{item.name} from Primos Pizza"
-  sizes="(max-width: 640px) 100vw, 320px"
+  class="w-full h-full object-cover rounded-lg"
+  loading="lazy"
 />
 ```
+
+**Note**: Enhanced:img plugin conflicts with dynamic template string paths. Use regular img tags with loading="lazy" for menu items.
 
 ## Troubleshooting
 
 ### Common Issues
 - **TypeScript Errors**: Run `npm run typecheck` for detailed validation
-- **Svelte 5 Runes**: Ensure using `$state()`, `$derived()`, `$props()` pattern
+- **Svelte 5 Runes**: Ensure using `$state()`, `$derived()`, `$props()` pattern and `.svelte.js` file extensions for stores
+- **$effect Orphan Errors**: Use manual persistence calls instead of $effect in stores
 - **Test Failures**: Check imports from '@testing-library/svelte/svelte5'
-- **Build Errors**: Verify enhanced-img plugin configuration in vite.config.js
+- **Enhanced:img Template Errors**: Use regular img tags for dynamic paths with template strings
+- **Import Errors**: Use `.svelte.js` extension when importing runes-based stores
+
+### Systematic Debugging
+Use the automated debug command for complex issues:
+```bash
+claude debug "Your error message or issue description here"
+```
+
+This command will automatically research Svelte documentation, analyze the error, create a fix specification, and implement the solution.
 
 ### ESLint Configuration
 Uses simplified configuration without TypeScript conflicts. Override rules in `.eslintrc.cjs` for project-specific requirements.
+
+## Claude Commands
+
+The project includes automated workflows in `.claude/commands/` for common development tasks:
+
+### Available Commands
+- **debug.md**: Automated debugging with documentation research and systematic fixes
+- **add-menu-item.md**: Guided workflow for adding new menu items with validation
+- **update-pricing.md**: Price calculation updates with testing validation
+- **optimize-images.md**: Image optimization and performance tuning
+- **build-pos-dtos.md**: POS system DTO pattern implementation
+- **test-pos-integration.md**: POS integration testing workflows
+- **deploy-changes.md**: Deployment preparation and validation
+
+### Usage Pattern
+```bash
+claude [command-name] "specific details or context"
+```
+
+These commands provide comprehensive, automated workflows that include research, planning, implementation, and testing phases for complex development tasks.

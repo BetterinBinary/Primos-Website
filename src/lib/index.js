@@ -1,1 +1,8 @@
-// place files you want to import through the `$lib` alias in this folder.
+// Component exports
+export * from './components/index.js';
+
+// Store exports
+export * from './stores/index.js';
+
+// Utility exports
+export * from './utils/index.js';
