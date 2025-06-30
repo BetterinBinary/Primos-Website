@@ -135,7 +135,7 @@
           searchQuery={searchQuery()}
           placeholder="Search pizzas, appetizers, desserts..."
           onSearch={(query) => updateSearchQuery(query)}
-          debounceMs={300}
+          debounceMs={0}
           autofocus={false}
           showClearButton={true}
         />

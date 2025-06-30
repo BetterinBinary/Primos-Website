@@ -12,7 +12,7 @@
     searchQuery = '',
     placeholder = 'Search menu items...',
     debounceMs = 300,
-    onSearch = null,
+    onSearch,
     autofocus = false,
     showClearButton = true
   }: Props = $props();
@@ -22,36 +22,29 @@
   let internalQuery = $state(searchQuery);
   let isFocused = $state(false);
 
-  // Debounced search effect
+  // Debounced search effect - watches internalQuery changes
   $effect(() => {
+    console.log('🔍 SearchBar: internalQuery changed to:', internalQuery);
+    
+    // Clear existing timer
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
     
+    // Set new debounced callback for user input
     debounceTimer = setTimeout(() => {
-      searchQuery = internalQuery;
+      console.log('⏰ SearchBar: Debounce complete, calling onSearch with:', internalQuery);
       if (onSearch) {
         onSearch(internalQuery);
+        console.log('✅ SearchBar: onSearch callback executed');
+      } else {
+        console.log('❌ SearchBar: No onSearch callback provided');
       }
     }, debounceMs);
-    
-    return () => {
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-    };
-  });
-
-  // Sync external changes to internal state
-  $effect(() => {
-    if (searchQuery !== internalQuery) {
-      internalQuery = searchQuery;
-    }
   });
 
   function clearSearch() {
     internalQuery = '';
-    searchQuery = '';
     if (searchInput) {
       searchInput.focus();
     }

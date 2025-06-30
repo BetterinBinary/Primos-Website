@@ -54,19 +54,12 @@ function createMenuStore() {
     }
   }
 
-  // Search functionality with debouncing
+  // Search functionality - no debouncing (SearchBar handles it)
   function updateSearchQuery(query) {
+    console.log('📝 Menu Store: updateSearchQuery called with:', query);
     searchQuery = query;
-    
-    // Clear existing timeout
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-    
-    // Set new timeout for debounced search
-    searchTimeout = setTimeout(() => {
-      debouncedSearchQuery = query;
-    }, 300); // 300ms debounce delay
+    debouncedSearchQuery = query; // Update immediately since SearchBar already debounced
+    console.log('📝 Menu Store: Updated searchQuery to:', searchQuery, 'debouncedSearchQuery to:', debouncedSearchQuery);
   }
 
   // Category selection
@@ -94,27 +87,45 @@ function createMenuStore() {
 
   // Derived state for filtered menu items
   const filteredMenuItems = $derived(() => {
+    console.log('🔄 Filtering: Starting with debouncedSearchQuery:', debouncedSearchQuery, 'selectedCategory:', selectedCategory);
+    
     if (!menuData) return [];
     
     let items = allMenuItems();
+    console.log('🔄 Filtering: Starting with', items.length, 'total items');
     
     // Filter by category
     if (selectedCategory !== 'all') {
       items = items.filter((item) => item.categoryId === selectedCategory);
+      console.log('🔄 Filtering: After category filter:', items.length, 'items');
     }
     
     // Filter by search query (debounced)
     if (debouncedSearchQuery.trim()) {
       const query = debouncedSearchQuery.toLowerCase();
-      items = items.filter((item) =>
-        item.name.toLowerCase().includes(query) ||
-        item.description?.toLowerCase().includes(query) ||
-        item.categoryName.toLowerCase().includes(query)
-      );
+      console.log('🔄 Filtering: Applying search filter for query:', query);
+      
+      const beforeSearch = items.length;
+      items = items.filter((item) => {
+        const matches = item.name.toLowerCase().includes(query) ||
+          item.description?.toLowerCase().includes(query) ||
+          item.categoryName.toLowerCase().includes(query);
+        
+        if (matches) {
+          console.log('✅ Match found:', item.name);
+        }
+        return matches;
+      });
+      console.log('🔄 Filtering: After search filter:', items.length, 'items (was', beforeSearch, ')');
+    } else {
+      console.log('🔄 Filtering: No search query, skipping search filter');
     }
     
     // Only return available items
-    return items.filter((item) => item.available);
+    const finalItems = items.filter((item) => item.available);
+    console.log('🔄 Filtering: Final result:', finalItems.length, 'available items');
+    
+    return finalItems;
   });
 
   // Derived state for available categories
@@ -244,7 +255,7 @@ function createMenuStore() {
 // Export the menu store instance
 export const menu = createMenuStore();
 
-// Export reactive properties and functions for convenience
+// Export reactive properties - all as functions for consistent reactivity
 export const menuData = () => menu.menuData;
 export const loading = () => menu.loading;
 export const error = () => menu.error;

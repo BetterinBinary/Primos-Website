@@ -349,7 +349,7 @@ function createCartStore() {
 // Export the cart store instance
 export const cart = createCartStore();
 
-// Export reactive properties and functions for convenience
+// Export reactive properties - all as functions for consistent reactivity
 export const cartItems = () => cart.cartItems;
 export const isCartOpen = () => cart.isCartOpen;
 export const cartError = () => cart.cartError;
