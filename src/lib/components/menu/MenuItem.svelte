@@ -1,14 +1,22 @@
 <script lang="ts">
-  import type { MenuItem, Size, Topping, AddOn } from '$lib/types/menu';
+  import { slide } from 'svelte/transition';
+  import { Button } from '../ui/index.js';
+  import type { 
+    MenuItem, 
+    Size, 
+    Topping, 
+    AddOn
+  } from '$lib/types/menu';
 
   interface Props {
     item: MenuItem;
-    onAddToCart: (item: MenuItem & {
+    onAddToCart: (item: MenuItem, options: {
       selectedSize: Size | null;
       selectedToppings: Topping[];
       selectedAddOns: AddOn[];
+      selectedOptions: string[];
       quantity: number;
-      totalPrice: number;
+      specialInstructions: string;
     }) => void;
   }
 
@@ -17,6 +25,13 @@
   let selectedToppings = $state<Topping[]>([]);
   let selectedAddOns = $state<AddOn[]>([]);
   let quantity = $state(1);
+  let showCustomizer = $state(false);
+  
+  // Determine if item has customization options
+  const hasCustomizations = $derived(() => {
+    return (item.sizes && item.sizes.length > 1) || 
+           (item.toppings?.extraItems && item.toppings.extraItems.length > 0);
+  });
 
   const basePrice = $derived(
     selectedSize ? selectedSize.price : item.basePrice || 0
@@ -43,11 +58,63 @@
     }
   }
 
+  function handleQuantityChange(newQuantity: number) {
+    quantity = newQuantity;
+  }
+
+  function handleQuickAdd() {
+    // Quick add with default selections - pass properly structured options
+    const options = {
+      selectedSize: item.sizes?.[0] || null,
+      selectedToppings: [],
+      selectedAddOns: [],
+      selectedOptions: [],
+      quantity: 1,
+      specialInstructions: ''
+    };
+    
+    onAddToCart(item, options);
+  }
+
+  function handleCustomize() {
+    showCustomizer = true;
+  }
+
+  function handleCustomizedAdd() {
+    // Pass customized selections properly structured 
+    const customOptions = [];
+    
+    if (selectedSize && item.sizes && item.sizes.length > 1) {
+      customOptions.push(`Size: ${selectedSize.name}`);
+    }
+    
+    if (selectedToppings.length > 0) {
+      customOptions.push(`Toppings: ${selectedToppings.map(t => t.name).join(', ')}`);
+    }
+    
+    const options = {
+      selectedSize,
+      selectedToppings,
+      selectedAddOns,
+      selectedOptions: customOptions,
+      quantity,
+      specialInstructions: ''
+    };
+    
+    onAddToCart(item, options);
+    showCustomizer = false;
+  }
+
 </script>
 
 <article
-  class="menu-item bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between h-full"
+  class="menu-item bg-[#F4F2EB] rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between h-full relative overflow-hidden border-2 border-black"
 >
+  <!-- Noise overlay -->
+  <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+  
+  <!-- Content wrapper -->
+  <div class="relative z-10">
   <!-- Top section: Name, Description, and Image -->
   <div class="flex justify-between items-start gap-4 mb-4">
     <div class="flex-1">
@@ -79,83 +146,119 @@
   </div>
 
   <!-- Customization Options -->
-  <div class="space-y-4 mb-4">
-    <!-- Size Selection -->
-    {#if item.sizes && item.sizes.length > 0}
+  {#if showCustomizer}
+    <div class="space-y-4 mb-4 border-t border-gray-200 pt-4" transition:slide={{ duration: 300 }}>
+      <!-- Size Selection -->
+      {#if item.sizes && item.sizes.length > 0}
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Size</h4>
+          <div class="space-y-2">
+            {#each item.sizes as size}
+              <label class="flex items-center justify-between cursor-pointer">
+                <div class="flex items-center">
+                  <input
+                    type="radio"
+                    bind:group={selectedSize}
+                    value={size}
+                    class="mr-2 text-primos-red-600 focus:ring-primos-red-500"
+                  />
+                  <span class="text-sm text-gray-700">{size.name}</span>
+                </div>
+                <span class="text-sm font-medium text-primos-red-600">
+                  ${size.price.toFixed(2)}
+                </span>
+              </label>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <!-- Toppings Selection -->
+      {#if item.toppings && item.toppings.extraItems && item.toppings.extraItems.length > 0}
+        <div>
+          <h4 class="font-medium text-gray-900 mb-2">Add Toppings</h4>
+          <div class="space-y-2">
+            {#each item.toppings.extraItems as topping}
+              <label class="flex items-center justify-between cursor-pointer">
+                <div class="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedToppings.some((t) => t.name === topping.name)}
+                    onchange={() => toggleTopping({ id: topping.name, name: topping.name, category: 'meat', available: true })}
+                    class="mr-2 text-primos-red-600 focus:ring-primos-red-500"
+                  />
+                  <span class="text-sm text-gray-700">{topping.name}</span>
+                </div>
+                <span class="text-sm font-medium text-primos-red-600">
+                  +${topping.price.toFixed(2)}
+                </span>
+              </label>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <!-- Quantity Selection -->
       <div>
-        <h4 class="font-medium text-gray-900 mb-2">Size</h4>
-        <div class="space-y-2">
-          {#each item.sizes as size}
-            <label class="flex items-center justify-between cursor-pointer">
-              <div class="flex items-center">
-                <input
-                  type="radio"
-                  bind:group={selectedSize}
-                  value={size}
-                  class="mr-2 text-primos-red-600 focus:ring-primos-red-500"
-                />
-                <span class="text-sm text-gray-700">{size.name}</span>
-              </div>
-              <span class="text-sm font-medium text-primos-red-600">
-                ${size.price.toFixed(2)}
-              </span>
-            </label>
-          {/each}
+        <h4 class="font-medium text-gray-900 mb-2">Quantity</h4>
+        <div class="flex items-center space-x-3">
+          <button
+            type="button"
+            class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+            onclick={() => handleQuantityChange(Math.max(1, quantity - 1))}
+            disabled={quantity <= 1}
+          >
+            -
+          </button>
+          <span class="w-8 text-center font-medium">{quantity}</span>
+          <button
+            type="button"
+            class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+            onclick={() => handleQuantityChange(quantity + 1)}
+          >
+            +
+          </button>
         </div>
       </div>
-    {/if}
 
-    <!-- Toppings Selection -->
-    {#if item.toppings && item.toppings.extraItems && item.toppings.extraItems.length > 0}
-      <div>
-        <h4 class="font-medium text-gray-900 mb-2">Add Toppings</h4>
-        <div class="space-y-2">
-          {#each item.toppings.extraItems as topping}
-            <label class="flex items-center justify-between cursor-pointer">
-              <div class="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={selectedToppings.some((t) => t.name === topping.name)}
-                  onchange={() => toggleTopping({ id: topping.name, name: topping.name, category: 'meat', available: true })}
-                  class="mr-2 text-primos-red-600 focus:ring-primos-red-500"
-                />
-                <span class="text-sm text-gray-700">{topping.name}</span>
-              </div>
-              <span class="text-sm font-medium text-primos-red-600">
-                +${topping.price.toFixed(2)}
-              </span>
-            </label>
-          {/each}
+      <!-- Price Summary -->
+      <div class="bg-gray-50 rounded-lg p-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600">Base Price × {quantity}</span>
+          <span class="text-sm text-gray-900">${(basePrice * quantity).toFixed(2)}</span>
+        </div>
+        {#if toppingsPrice > 0}
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Toppings</span>
+            <span class="text-sm text-gray-900">+${toppingsPrice.toFixed(2)}</span>
+          </div>
+        {/if}
+        <hr class="my-2 border-gray-200" />
+        <div class="flex justify-between items-center font-medium">
+          <span class="text-gray-900">Total</span>
+          <span class="text-lg text-primos-red-600">${totalPrice.toFixed(2)}</span>
         </div>
       </div>
-    {/if}
 
-    <!-- Add-ons Selection (currently not supported by MenuItem type) -->
-    <!-- TODO: Add addOns to MenuItem interface when needed -->
-
-    <!-- Quantity Selection -->
-    <div>
-      <h4 class="font-medium text-gray-900 mb-2">Quantity</h4>
-      <div class="flex items-center space-x-3">
-        <button
-          type="button"
-          class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-          onclick={() => (quantity = Math.max(1, quantity - 1))}
-          disabled={quantity <= 1}
+      <!-- Action Buttons -->
+      <div class="flex space-x-3">
+        <Button
+          variant="primary"
+          class="flex-1"
+          onclick={handleCustomizedAdd}
         >
-          -
-        </button>
-        <span class="w-8 text-center font-medium">{quantity}</span>
-        <button
-          type="button"
-          class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-          onclick={() => (quantity += 1)}
+          Add to Cart - ${totalPrice.toFixed(2)}
+        </Button>
+        <Button
+          variant="ghost"
+          class="flex-1"
+          onclick={() => showCustomizer = false}
         >
-          +
-        </button>
+          Cancel
+        </Button>
       </div>
     </div>
-  </div>
+  {/if}
 
   <!-- Additional Info -->
   <div class="mb-4 space-y-2">
@@ -172,7 +275,11 @@
     <!-- Price and availability section -->
     <div class="flex flex-row items-center justify-center mb-4">
       <span class="text-primos-red-600 font-bold text-xl">
-        ${totalPrice.toFixed(2)}
+        {#if !showCustomizer}
+          ${(item.sizes?.[0]?.price || item.basePrice || 0).toFixed(2)}
+        {:else}
+          ${totalPrice.toFixed(2)}
+        {/if}
       </span>
 
       {#if !item.available}
@@ -182,22 +289,61 @@
       {/if}
     </div>
 
-    <!-- Add to cart button -->
+    <!-- Action buttons -->
     {#if item.available}
-      <button
-        class="w-full btn-primary"
-        onclick={() =>
-          onAddToCart({
-            ...item,
-            selectedSize,
-            selectedToppings,
-            selectedAddOns,
-            quantity,
-            totalPrice,
-          })}
-      >
-        Add to Cart
-      </button>
+      {#if !showCustomizer}
+        <!-- Quick Add / Customize Options -->
+        {#if hasCustomizations()}
+          <div class="space-y-2">
+            <!-- Quick Add Button -->
+            <Button
+              variant="primary"
+              class="w-full"
+              onclick={handleQuickAdd}
+            >
+              Quick Add - ${(item.sizes?.[0]?.price || item.basePrice || 0).toFixed(2)}
+            </Button>
+            
+            <!-- Customize Button -->
+            <Button
+              variant="outline"
+              class="w-full"
+              onclick={handleCustomize}
+            >
+              Customize
+            </Button>
+          </div>
+        {:else}
+          <!-- Simple Add to Cart -->
+          <Button
+            variant="primary"
+            class="w-full"
+            onclick={handleQuickAdd}
+          >
+            Add to Cart
+          </Button>
+        {/if}
+      {:else}
+        <!-- Customizer Action Buttons -->
+        <div class="space-y-2">
+          <Button
+            variant="primary"
+            class="w-full"
+            onclick={handleCustomizedAdd}
+          >
+            Add to Cart - ${totalPrice.toFixed(2)}
+          </Button>
+          
+          <Button
+            variant="ghost"
+            class="w-full"
+            onclick={() => showCustomizer = false}
+          >
+            Cancel
+          </Button>
+        </div>
+      {/if}
     {/if}
+  </div>
   </div>
 </article>

@@ -3,6 +3,15 @@
     "id": "appetizers",
     "name": "Appetizers & Side Orders",
     "description": "Start your meal with our delicious appetizers and sides",
+    "dippingSauces": [
+      { "id": "ranch", "name": "Ranch", "category": "creamy", "available": true },
+      { "id": "marinara", "name": "Marinara", "category": "tangy", "available": true },
+      { "id": "garlic-butter", "name": "Garlic Butter", "category": "creamy", "available": true },
+      { "id": "cheese-sauce", "name": "Cheese Sauce", "category": "creamy", "available": true, "extraCost": 0.50 },
+      { "id": "buffalo", "name": "Buffalo Sauce", "category": "spicy", "available": true },
+      { "id": "bbq", "name": "BBQ Sauce", "category": "sweet", "available": true },
+      { "id": "honey-mustard", "name": "Honey Mustard", "category": "sweet", "available": true }
+    ],
     "items": [
       {
         "id": "cole-slaw",
@@ -18,7 +27,9 @@
         "description": "Golden battered onion rings served hot and crispy",
         "basePrice": 4.67,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableCookingPreferences": ["regular", "well-done", "extra-crispy"],
+        "availableDippingSauces": ["ranch", "marinara", "cheese-sauce", "bbq"]
       },
       {
         "id": "french-fries",
@@ -26,7 +37,9 @@
         "description": "Crispy golden french fries",
         "basePrice": 2.83,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableCookingPreferences": ["regular", "well-done", "extra-crispy"],
+        "availableDippingSauces": ["ranch", "marinara", "cheese-sauce", "bbq", "buffalo"]
       },
       {
         "id": "pizza-slice",
@@ -42,7 +55,9 @@
         "description": "Fresh mushrooms coated in seasoned batter and fried to perfection",
         "basePrice": 4.76,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableCookingPreferences": ["regular", "well-done", "extra-crispy"],
+        "availableDippingSauces": ["ranch", "marinara", "garlic-butter", "cheese-sauce"]
       },
       {
         "id": "seasoned-potato-wedges",
@@ -50,7 +65,9 @@
         "description": "Crispy potato wedges with our special seasoning blend",
         "basePrice": 4.29,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableCookingPreferences": ["regular", "well-done", "extra-crispy"],
+        "availableDippingSauces": ["ranch", "cheese-sauce", "bbq", "buffalo"]
       },
       {
         "id": "garlic-sticks-half-dozen",
@@ -58,7 +75,8 @@
         "description": "Six freshly baked garlic breadsticks",
         "basePrice": 2.78,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableDippingSauces": ["marinara", "garlic-butter", "cheese-sauce"]
       },
       {
         "id": "garlic-sticks-dozen",
@@ -66,7 +84,8 @@
         "description": "Twelve freshly baked garlic breadsticks",
         "basePrice": 4.25,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableDippingSauces": ["marinara", "garlic-butter", "cheese-sauce"]
       },
       {
         "id": "garlic-sticks-half-dozen-cheese",
@@ -74,7 +93,8 @@
         "description": "Six garlic breadsticks topped with melted mozzarella cheese",
         "basePrice": 4.58,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableDippingSauces": ["marinara", "garlic-butter"]
       },
       {
         "id": "garlic-sticks-dozen-cheese",
@@ -82,7 +102,8 @@
         "description": "Twelve garlic breadsticks topped with melted mozzarella cheese",
         "basePrice": 7.59,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableDippingSauces": ["marinara", "garlic-butter"]
       },
       {
         "id": "deep-fried-cheese-stix",
@@ -90,7 +111,9 @@
         "description": "Mozzarella cheese sticks breaded and fried until golden",
         "basePrice": 5.19,
         "category": "appetizers",
-        "available": true
+        "available": true,
+        "availableCookingPreferences": ["regular", "well-done", "extra-crispy"],
+        "availableDippingSauces": ["marinara", "ranch", "garlic-butter", "buffalo"]
       }
     ]
   },
@@ -105,12 +128,18 @@
         "description": "Classic cheese pizza with our signature sauce and mozzarella",
         "category": "pizza",
         "basePrice": 13.07,
+        "shape": "round",
         "sizes": [
           { "size": "small", "name": "Small 12\"/8pc", "price": 10.71 },
           { "size": "medium", "name": "Medium 14\"/10pc", "price": 13.07 },
           { "size": "large", "name": "Large 16\"/12pc", "price": 16.04 },
           { "size": "xlarge", "name": "X-Large 18\"/14pc", "price": 19.67 }
         ],
+        "availableCrusts": ["regular", "thin", "thick", "garlic-crust"],
+        "availableSauces": ["pizza-sauce", "light-sauce", "extra-sauce", "no-sauce"],
+        "availableCheeseOptions": ["regular", "extra-cheese", "light-cheese", "no-cheese"],
+        "allowHalfToppings": true,
+        "maxToppings": 10,
         "toppings": {
           "extraItems": [
             { "size": "small", "price": 1.27 },
@@ -127,11 +156,17 @@
         "description": "Classic square-cut cheese pizza with our signature sauce and mozzarella",
         "category": "pizza",
         "basePrice": 13.07,
+        "shape": "square",
         "sizes": [
           { "size": "small", "name": "Small 7\"x9\"/6pc", "price": 10.71 },
           { "size": "medium", "name": "Medium 9\"x13\"/10pc", "price": 13.07 },
           { "size": "large", "name": "Large 11\"x16\"/12pc", "price": 16.04 }
         ],
+        "availableCrusts": ["regular", "thin", "thick"],
+        "availableSauces": ["pizza-sauce", "light-sauce", "extra-sauce", "no-sauce"],
+        "availableCheeseOptions": ["regular", "extra-cheese", "light-cheese", "no-cheese"],
+        "allowHalfToppings": false,
+        "maxToppings": 8,
         "toppings": {
           "extraItems": [
             { "size": "small", "price": 1.27 },

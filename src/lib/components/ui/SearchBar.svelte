@@ -89,20 +89,24 @@
         </svg>
       </div>
 
-      <!-- Input field -->
-      <input
-        bind:this={searchInput}
-        bind:value={internalQuery}
-        type="text"
-        {placeholder}
-        {autofocus}
-        onkeydown={handleKeydown}
-        onfocus={handleFocus}
-        onblur={handleBlur}
-        class="search-input"
-        class:focused={isFocused}
-        class:has-content={internalQuery.length > 0}
-      />
+      <!-- Input field with noise overlay -->
+      <div class="relative">
+        <input
+          bind:this={searchInput}
+          bind:value={internalQuery}
+          type="text"
+          {placeholder}
+          {autofocus}
+          onkeydown={handleKeydown}
+          onfocus={handleFocus}
+          onblur={handleBlur}
+          class="search-input"
+          class:focused={isFocused}
+          class:has-content={internalQuery.length > 0}
+        />
+        <!-- Noise overlay -->
+        <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none rounded-lg"></div>
+      </div>
 
       <!-- Clear button -->
       {#if showClearButton && internalQuery.length > 0}
@@ -156,7 +160,7 @@
            text-gray-900 placeholder-gray-500
            focus:outline-none focus:ring-2 focus:ring-primos-red-500 focus:border-transparent
            transition-all duration-200 ease-in-out
-           bg-white shadow-sm;
+           bg-[#F4F2EB] shadow-sm relative overflow-hidden;
   }
 
   .search-input:hover {
@@ -173,8 +177,8 @@
 
   .search-suggestions {
     @apply absolute top-full left-0 right-0 mt-1 
-           bg-white border border-gray-200 rounded-lg shadow-lg
-           z-10 max-h-48 overflow-y-auto;
+           bg-[#F4F2EB] border border-gray-200 rounded-lg shadow-lg
+           z-10 max-h-48 overflow-y-auto relative overflow-hidden;
   }
 
   /* Mobile optimizations */

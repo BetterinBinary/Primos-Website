@@ -287,31 +287,102 @@ function createCartStore() {
     };
   }
 
-  // Validate cart before checkout
+  // Enhanced cart validation with business rules
   function validateCart() {
     const errors = [];
+    const warnings = [];
+    const currentHour = new Date().getHours();
+    const currentDay = new Date().getDay(); // 0 = Sunday, 6 = Saturday
     
+    // Basic validation
     if (cartItems.length === 0) {
       errors.push('Cart is empty');
+      return { isValid: false, errors, warnings };
     }
     
+    // Item-level validation
     cartItems.forEach((item, index) => {
+      const itemName = item.menuItem?.name || `Item ${index + 1}`;
+      
+      // Availability checks
       if (!item.menuItem || !item.menuItem.available) {
-        errors.push(`Item ${index + 1} is no longer available`);
+        errors.push(`${itemName} is no longer available`);
       }
       
+      // Quantity validation
       if (item.quantity <= 0) {
-        errors.push(`Item ${index + 1} has invalid quantity`);
+        errors.push(`${itemName} has invalid quantity`);
+      } else if (item.quantity > 10) {
+        warnings.push(`Large quantity for ${itemName} (${item.quantity}). Please call for bulk orders.`);
       }
       
+      // Price validation
       if (item.totalPrice <= 0) {
-        errors.push(`Item ${index + 1} has invalid price`);
+        errors.push(`${itemName} has invalid price`);
+      }
+      
+      // Special item validation
+      if (item.menuItem?.categoryName?.toLowerCase().includes('pizza')) {
+        if (item.selectedSize && !item.selectedSize.size) {
+          errors.push(`${itemName} requires a valid size selection`);
+        }
       }
     });
     
+    // Business rule validation
+    const summary = cartSummary();
+    
+    // Minimum order validation
+    const minimumOrder = 15.00;
+    if (summary.total < minimumOrder) {
+      warnings.push(`Minimum order is $${minimumOrder.toFixed(2)}. Add $${(minimumOrder - summary.total).toFixed(2)} more to meet minimum.`);
+    }
+    
+    // Store hours validation (example hours)
+    const storeHours = {
+      0: { open: 16, close: 24 }, // Sunday: 4pm-12am
+      1: { open: 16, close: 22 }, // Monday: 4pm-10pm
+      2: { open: 16, close: 22 }, // Tuesday: 4pm-10pm
+      3: { open: 16, close: 24 }, // Wednesday: 4pm-12am
+      4: { open: 16, close: 24 }, // Thursday: 4pm-12am
+      5: { open: 16, close: 2 },  // Friday: 4pm-2am (next day)
+      6: { open: 16, close: 2 }   // Saturday: 4pm-2am (next day)
+    };
+    
+    const todayHours = storeHours[currentDay];
+    const isAfterMidnight = currentHour < 4; // Handle late night hours
+    const effectiveHour = isAfterMidnight ? currentHour + 24 : currentHour;
+    
+    if (effectiveHour < todayHours.open || effectiveHour > todayHours.close) {
+      const openTime = todayHours.open > 12 ? `${todayHours.open - 12}pm` : `${todayHours.open}am`;
+      const closeTime = todayHours.close > 24 ? `${todayHours.close - 24}am` : 
+                       todayHours.close > 12 ? `${todayHours.close - 12}pm` : `${todayHours.close}am`;
+      warnings.push(`Store is currently closed. Hours today: ${openTime} - ${closeTime}`);
+    }
+    
+    // Large order validation
+    if (summary.itemCount > 20) {
+      warnings.push('Large order detected. Please call ahead for faster preparation: (248) 476-4260');
+    }
+    
+    // Special dietary warnings
+    const hasAllergens = cartItems.some(item => 
+      item.menuItem?.allergens && item.menuItem.allergens.length > 0
+    );
+    if (hasAllergens) {
+      warnings.push('Cart contains items with allergens. Please inform us of any allergies when ordering.');
+    }
+    
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
+      warnings,
+      summary: {
+        itemCount: summary.itemCount,
+        subtotal: summary.subtotal,
+        total: summary.total,
+        meetsMinimum: summary.total >= minimumOrder
+      }
     };
   }
 

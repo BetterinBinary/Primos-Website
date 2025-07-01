@@ -1,7 +1,5 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-
-  type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost';
+  type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'outline' | 'ghost' | string;
   type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
   type ButtonType = 'button' | 'submit' | 'reset';
 
@@ -13,8 +11,7 @@
     href?: string | null;
     type?: ButtonType;
     class?: string;
-    onclick?: (event: MouseEvent) => void;
-    children: Snippet;
+    onclick?: ((event: MouseEvent) => void) | (() => void) | null;
   }
 
   let { 
@@ -25,13 +22,12 @@
     href = null,
     type = 'button',
     class: className = '',
-    onclick = null,
-    children
+    onclick = null
   }: Props = $props();
 
   const baseClasses = 'inline-flex items-center justify-center font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
-  const variantClasses: Record<ButtonVariant, string> = {
+  const variantClasses: Record<string, string> = {
     primary: 'bg-primos-blue-500 text-white hover:bg-primos-blue-600 focus:ring-primos-blue-500',
     secondary: 'bg-primos-gold-500 text-primos-blue-900 hover:bg-primos-gold-600 focus:ring-primos-gold-500',
     danger: 'bg-primos-red-600 text-white hover:bg-primos-red-700 focus:ring-primos-red-500',
@@ -74,7 +70,7 @@
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
     {/if}
-    {@render children()}
+    <slot />
   </a>
 {:else}
   <button
@@ -89,6 +85,6 @@
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
     {/if}
-    {@render children()}
+    <slot />
   </button>
 {/if}

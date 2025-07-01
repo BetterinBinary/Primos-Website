@@ -13,7 +13,19 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"workflow:debug": "echo '🔍 Use: claude debug \"your issue description\"' && echo 'Example: claude debug \"Menu page not loading\"'",
+		"workflow:add-item": "echo '➕ Use: claude add-menu-item' && echo 'Adds new menu items with validation'",
+		"workflow:pricing": "echo '💰 Use: claude update-pricing' && echo 'Updates menu pricing system-wide'",
+		"workflow:deploy": "echo '🚀 Use: claude deploy-changes' && echo 'Deploys changes with testing'",
+		"workflow:images": "echo '🖼️ Use: claude optimize-images' && echo 'Optimizes menu images'",
+		"workflow:pos-test": "echo '🔌 Use: claude test-pos-integration' && echo 'Tests POS system integration'",
+		"workflow:pos-build": "echo '📦 Use: claude build-pos-dtos' && echo 'Builds POS data transfer objects'",
+		"workflow:help": "echo '📚 Available workflows:' && npm run workflow:debug && npm run workflow:add-item && npm run workflow:pricing && npm run workflow:deploy && npm run workflow:images && npm run workflow:pos-test && npm run workflow:pos-build",
+		"dev:clean": "rm -rf .svelte-kit && npm run dev",
+		"build:analyze": "npm run build && du -sh .svelte-kit/output",
+		"test:coverage": "vitest run --coverage",
+		"reset": "rm -rf node_modules .svelte-kit && npm install"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^6.0.1",

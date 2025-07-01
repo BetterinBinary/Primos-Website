@@ -1,6 +1,22 @@
-<script>
-  import MenuItem from './MenuItem.svelte';
+<script lang="ts">
+  import MenuItemComponent from './MenuItem.svelte';
   import LoadingSpinner from '../ui/LoadingSpinner.svelte';
+  import type { MenuItem, Size, Topping, AddOn } from '$lib/types/menu';
+  
+  interface Props {
+    items?: MenuItem[];
+    searchQuery?: string;
+    selectedCategory?: string;
+    loading?: boolean;
+    onAddToCart: (item: MenuItem, options: {
+      selectedSize: Size | null;
+      selectedToppings: Topping[];
+      selectedAddOns: AddOn[];
+      selectedOptions: string[];
+      quantity: number;
+      specialInstructions: string;
+    }) => void;
+  }
   
   let { 
     items = [], 
@@ -8,7 +24,10 @@
     selectedCategory = '',
     loading = false,
     onAddToCart 
-  } = $props();
+  }: Props = $props();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const MenuItemWithIgnore: any = MenuItemComponent;
 
   // Filter items based on search query and category
   const filteredItems = $derived(() => {
@@ -25,7 +44,7 @@
       filtered = filtered.filter(item =>
         item.name.toLowerCase().includes(query) ||
         item.description.toLowerCase().includes(query) ||
-        (item.allergens && item.allergens.some(allergen => 
+        (item.allergens && item.allergens.some((allergen: string) => 
           allergen.toLowerCase().includes(query)
         ))
       );
@@ -37,13 +56,13 @@
 
   // Group items by category for better organization
   const groupedItems = $derived(() => {
-    const groups = new Map();
+    const groups = new Map<string, MenuItem[]>();
     
-    filteredItems.forEach(item => {
+    filteredItems().forEach((item: MenuItem) => {
       if (!groups.has(item.category)) {
         groups.set(item.category, []);
       }
-      groups.get(item.category).push(item);
+      groups.get(item.category)!.push(item);
     });
     
     return groups;
@@ -51,7 +70,7 @@
 
   // Calculate grid columns based on number of items
   const gridCols = $derived(() => {
-    const itemCount = filteredItems.length;
+    const itemCount = filteredItems().length;
     if (itemCount === 1) return 'grid-cols-1 max-w-md mx-auto';
     if (itemCount === 2) return 'grid-cols-1 sm:grid-cols-2 max-w-4xl mx-auto';
     return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
@@ -63,7 +82,7 @@
     <div class="flex justify-center items-center py-12">
       <LoadingSpinner />
     </div>
-  {:else if filteredItems.length === 0}
+  {:else if filteredItems().length === 0}
     <!-- Empty state -->
     <div class="text-center py-12">
       <div class="mb-4">
@@ -109,7 +128,7 @@
     <!-- Menu items grid -->
     {#if selectedCategory === 'all' || !selectedCategory}
       <!-- Show grouped by categories when viewing all -->
-      {#each [...groupedItems.entries()] as [category, categoryItems]}
+      {#each [...groupedItems().entries()] as [category, categoryItems]}
         <div class="mb-8">
           <h2 class="text-2xl font-bold text-gray-900 mb-6 capitalize">
             {category.replace('-', ' ')}
@@ -118,7 +137,7 @@
           <div class="grid {gridCols} gap-6">
             {#each categoryItems as item (item.id)}
               <div class="min-h-full">
-                <MenuItem {item} {onAddToCart} />
+                <MenuItemWithIgnore item={item} onAddToCart={onAddToCart} />
               </div>
             {/each}
           </div>
@@ -127,9 +146,9 @@
     {:else}
       <!-- Show flat grid when viewing specific category -->
       <div class="grid {gridCols} gap-6">
-        {#each filteredItems as item (item.id)}
+        {#each filteredItems() as item (item.id)}
           <div class="min-h-full">
-            <MenuItem {item} {onAddToCart} />
+            <MenuItemWithIgnore item={item} onAddToCart={onAddToCart} />
           </div>
         {/each}
       </div>
@@ -138,8 +157,8 @@
     <!-- Results count -->
     <div class="mt-8 text-center">
       <p class="text-sm text-gray-500">
-        Showing {filteredItems.length} 
-        {filteredItems.length === 1 ? 'item' : 'items'}
+        Showing {filteredItems().length} 
+        {filteredItems().length === 1 ? 'item' : 'items'}
         {#if searchQuery.trim()}
           matching "{searchQuery}"
         {/if}

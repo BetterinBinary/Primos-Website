@@ -34,6 +34,61 @@ npm run test pricing.test.js
 npm run test:watch -- --grep "Button Component"
 ```
 
+### Development Convenience Scripts
+- `npm run dev:clean`: Clean build artifacts and start fresh dev server
+- `npm run build:analyze`: Build and analyze output bundle size
+- `npm run test:coverage`: Run tests with coverage reporting
+- `npm run reset`: Full reset - reinstall dependencies and clean artifacts
+
+## Workflow Automation
+
+### NPM Workflow Scripts
+Run `npm run workflow:help` to see all available workflows:
+
+- `npm run workflow:debug` - Interactive debugging assistance
+- `npm run workflow:add-item` - Add new menu items with validation
+- `npm run workflow:pricing` - Update pricing system-wide
+- `npm run workflow:deploy` - Deploy changes with testing
+- `npm run workflow:images` - Optimize menu images
+- `npm run workflow:pos-test` - Test POS integration
+- `npm run workflow:pos-build` - Build POS data transfer objects
+
+### Claude Command Usage
+Each workflow is designed to work with claude commands:
+
+```bash
+# Debug issues with automatic doc research
+claude debug "search functionality not working"
+
+# Add new menu items with validation
+claude add-menu-item
+
+# Update pricing across the system
+claude update-pricing
+
+# Deploy with full testing pipeline
+claude deploy-changes
+
+# Optimize images for performance
+claude optimize-images
+
+# Test POS system integration
+claude test-pos-integration
+
+# Build POS data transfer objects
+claude build-pos-dtos
+```
+
+### Workflow Command Files
+Detailed workflow documentation available in `.claude/commands/`:
+- `debug.md` - Systematic debugging with doc research
+- `add-menu-item.md` - Menu item addition with TypeScript validation
+- `update-pricing.md` - Comprehensive pricing updates
+- `deploy-changes.md` - Full deployment pipeline
+- `optimize-images.md` - Image optimization workflows
+- `test-pos-integration.md` - POS system testing procedures
+- `build-pos-dtos.md` - POS DTO generation and validation
+
 ## Architecture Overview
 
 ### Component Structure
