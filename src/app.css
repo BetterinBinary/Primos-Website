@@ -38,10 +38,7 @@
     @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300;
   }
 
-  /* Menu item styles */
-  .menu-item {
-    @apply card flex flex-col justify-between h-full;
-  }
+
 
   /* Text styles */
   .text-heading {

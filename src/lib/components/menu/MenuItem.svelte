@@ -1,11 +1,17 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { Button } from '../ui/index.js';
+  import BBQRibsCustomizer from './BBQRibsCustomizer.svelte';
+  import CombinationPlatesCustomizer from './CombinationPlatesCustomizer.svelte';
   import type { 
     MenuItem, 
     Size, 
     Topping, 
-    AddOn
+    AddOn,
+    BBQSauceLevel,
+    RibDoneness,
+    BBQSauceOption,
+    CombinationPlateOptions
   } from '$lib/types/menu';
 
   interface Props {
@@ -27,10 +33,24 @@
   let quantity = $state(1);
   let showCustomizer = $state(false);
   
+  // BBQ Ribs specific state
+  let selectedSauceLevel = $state<BBQSauceLevel>('regular');
+  let selectedDoneness = $state<RibDoneness>('fall-off-bone');
+  let selectedSauces = $state<BBQSauceOption[]>([]);
+  
+  // Combination Plates specific state
+  let combinationOptions = $state<CombinationPlateOptions>({
+    cookingPreference: 'regular',
+    sideSubstitutions: [],
+    specialInstructions: ''
+  });
+  
   // Determine if item has customization options
   const hasCustomizations = $derived(() => {
     return (item.sizes && item.sizes.length > 1) || 
-           (item.toppings?.extraItems && item.toppings.extraItems.length > 0);
+           (item.toppings?.extraItems && item.toppings.extraItems.length > 0) ||
+           (item.category === 'bbq-ribs') ||
+           (item.category === 'combination-plates');
   });
 
   const basePrice = $derived(
@@ -62,6 +82,29 @@
     quantity = newQuantity;
   }
 
+  // BBQ Ribs handlers
+  function handleSauceLevelChange(level: BBQSauceLevel) {
+    selectedSauceLevel = level;
+  }
+
+  function handleDonenessChange(doneness: RibDoneness) {
+    selectedDoneness = doneness;
+  }
+
+  function handleSauceToggle(sauce: BBQSauceOption) {
+    const index = selectedSauces.findIndex(s => s.id === sauce.id);
+    if (index > -1) {
+      selectedSauces.splice(index, 1);
+    } else {
+      selectedSauces.push(sauce);
+    }
+  }
+
+  // Combination Plates handlers
+  function handleCombinationOptionsChange(options: CombinationPlateOptions) {
+    combinationOptions = options;
+  }
+
   function handleQuickAdd() {
     // Quick add with default selections - pass properly structured options
     const options = {
@@ -84,12 +127,30 @@
     // Pass customized selections properly structured 
     const customOptions = [];
     
-    if (selectedSize && item.sizes && item.sizes.length > 1) {
-      customOptions.push(`Size: ${selectedSize.name}`);
-    }
-    
-    if (selectedToppings.length > 0) {
-      customOptions.push(`Toppings: ${selectedToppings.map(t => t.name).join(', ')}`);
+    if (item.category === 'bbq-ribs') {
+      // BBQ ribs specific options
+      customOptions.push(`Sauce Level: ${selectedSauceLevel}`);
+      customOptions.push(`Doneness: ${selectedDoneness}`);
+      if (selectedSauces.length > 0) {
+        customOptions.push(`Extra Sauces: ${selectedSauces.map(s => s.name).join(', ')}`);
+      }
+    } else if (item.category === 'combination-plates') {
+      // Combination plates specific options
+      if (combinationOptions.cookingPreference && combinationOptions.cookingPreference !== 'regular') {
+        customOptions.push(`Cooking: ${combinationOptions.cookingPreference}`);
+      }
+      if (combinationOptions.sideSubstitutions && combinationOptions.sideSubstitutions.length > 0) {
+        customOptions.push(`Sides: ${combinationOptions.sideSubstitutions.join(', ')}`);
+      }
+    } else {
+      // Generic customization for other items
+      if (selectedSize && item.sizes && item.sizes.length > 1) {
+        customOptions.push(`Size: ${selectedSize.name}`);
+      }
+      
+      if (selectedToppings.length > 0) {
+        customOptions.push(`Toppings: ${selectedToppings.map(t => t.name).join(', ')}`);
+      }
     }
     
     const options = {
@@ -108,13 +169,13 @@
 </script>
 
 <article
-  class="menu-item bg-[#F4F2EB] rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between h-full relative overflow-hidden border-2 border-black"
+  class="menu-item bg-[#F4F2EB] p-6 flex flex-col justify-between h-full relative overflow-hidden"
 >
   <!-- Noise overlay -->
   <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
   
   <!-- Content wrapper -->
-  <div class="relative z-10">
+  <div class="relative z-10 flex flex-col h-full">
   <!-- Top section: Name, Description, and Image -->
   <div class="flex justify-between items-start gap-4 mb-4">
     <div class="flex-1">
@@ -131,13 +192,13 @@
 
     <!-- Item image -->
     <div
-      class="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0"
+      class="w-24 h-24 bg-gray-200 flex items-center justify-center flex-shrink-0"
     >
       {#if item.image}
         <img
           src="/images/menu/{item.image}"
           alt="{item.name} from Primos Pizza"
-          class="w-full h-full object-cover rounded-lg"
+          class="w-full h-full object-cover"
         />
       {:else}
         <span class="text-gray-400 text-xl">🍕</span>
@@ -147,7 +208,35 @@
 
   <!-- Customization Options -->
   {#if showCustomizer}
-    <div class="space-y-4 mb-4 border-t border-gray-200 pt-4" transition:slide={{ duration: 300 }}>
+    {#if item.category === 'bbq-ribs'}
+      <!-- BBQ Ribs Customizer -->
+      <BBQRibsCustomizer
+        item={item}
+        selectedSauceLevel={selectedSauceLevel}
+        selectedDoneness={selectedDoneness}
+        selectedSauces={selectedSauces}
+        quantity={quantity}
+        onSauceLevelChange={handleSauceLevelChange}
+        onDonenessChange={handleDonenessChange}
+        onSauceToggle={handleSauceToggle}
+        onQuantityChange={handleQuantityChange}
+        onAddToCart={handleCustomizedAdd}
+        onCancel={() => showCustomizer = false}
+      />
+    {:else if item.category === 'combination-plates'}
+      <!-- Combination Plates Customizer -->
+      <CombinationPlatesCustomizer
+        item={item}
+        selectedOptions={combinationOptions}
+        quantity={quantity}
+        onOptionsChange={handleCombinationOptionsChange}
+        onQuantityChange={handleQuantityChange}
+        onAddToCart={handleCustomizedAdd}
+        onCancel={() => showCustomizer = false}
+      />
+    {:else}
+      <!-- Generic Customizer for other items -->
+      <div class="space-y-4 mb-4 border-t border-gray-200 pt-4" transition:slide={{ duration: 300 }}>
       <!-- Size Selection -->
       {#if item.sizes && item.sizes.length > 0}
         <div>
@@ -222,7 +311,11 @@
       </div>
 
       <!-- Price Summary -->
-      <div class="bg-gray-50 rounded-lg p-3">
+      <div class="bg-[#F4F2EB] p-3 relative overflow-hidden">
+        <!-- Noise overlay -->
+        <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+        <!-- Content wrapper -->
+        <div class="relative z-10">
         <div class="flex justify-between items-center">
           <span class="text-sm text-gray-600">Base Price × {quantity}</span>
           <span class="text-sm text-gray-900">${(basePrice * quantity).toFixed(2)}</span>
@@ -238,10 +331,11 @@
           <span class="text-gray-900">Total</span>
           <span class="text-lg text-primos-red-600">${totalPrice.toFixed(2)}</span>
         </div>
+        </div>
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex space-x-3">
+      <div class="flex space-x-3 mt-4">
         <Button
           variant="primary"
           class="flex-1"
@@ -258,6 +352,7 @@
         </Button>
       </div>
     </div>
+    {/if}
   {/if}
 
   <!-- Additional Info -->
@@ -294,7 +389,7 @@
       {#if !showCustomizer}
         <!-- Quick Add / Customize Options -->
         {#if hasCustomizations()}
-          <div class="space-y-2">
+          <div class="space-y-3">
             <!-- Quick Add Button -->
             <Button
               variant="primary"

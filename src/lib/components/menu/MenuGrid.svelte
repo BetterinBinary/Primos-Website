@@ -86,21 +86,21 @@
     <!-- Empty state -->
     <div class="text-center py-12">
       <div class="mb-4">
-        <span class="text-6xl text-gray-300">🍽️</span>
+        <span class="text-6xl text-primos-gold-500">🍽️</span>
       </div>
       
       {#if searchQuery.trim()}
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+        <h3 class="text-xl font-semibold text-white mb-2">
           No items found
         </h3>
-        <p class="text-gray-500 mb-4">
+        <p class="text-primos-gold-500 mb-4">
           No menu items match "<strong>{searchQuery}</strong>"
           {#if selectedCategory && selectedCategory !== 'all'}
             in the {selectedCategory} category
           {/if}
         </p>
         <button
-          class="text-primos-red-600 hover:text-primos-red-700 font-medium"
+          class="text-primos-gold-500 hover:text-white font-medium px-4 py-2 border border-primos-gold-500 rounded-lg hover:bg-primos-gold-500 transition-colors duration-200"
           onclick={() => {
             searchQuery = '';
             selectedCategory = 'all';
@@ -109,17 +109,17 @@
           Clear filters
         </button>
       {:else if selectedCategory && selectedCategory !== 'all'}
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+        <h3 class="text-xl font-semibold text-white mb-2">
           No items available
         </h3>
-        <p class="text-gray-500 mb-4">
+        <p class="text-primos-gold-500 mb-4">
           No items are currently available in the {selectedCategory} category
         </p>
       {:else}
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+        <h3 class="text-xl font-semibold text-white mb-2">
           No items available
         </h3>
-        <p class="text-gray-500">
+        <p class="text-primos-gold-500">
           Please check back later for menu updates
         </p>
       {/if}
@@ -130,13 +130,13 @@
       <!-- Show grouped by categories when viewing all -->
       {#each [...groupedItems().entries()] as [category, categoryItems]}
         <div class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6 capitalize">
+          <h2 class="text-2xl font-bold text-white mb-6 capitalize">
             {category.replace('-', ' ')}
           </h2>
           
-          <div class="grid {gridCols} gap-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB] mb-8 mx-4">
             {#each categoryItems as item (item.id)}
-              <div class="min-h-full">
+              <div class="relative border-r border-b border-gray-300 last:border-r-0 last:border-b-0 sm:last:border-r-0 sm:last:border-b-0 lg:last:border-r-0 lg:last:border-b-0 xl:last:border-r-0 xl:last:border-b-0">
                 <MenuItemWithIgnore item={item} onAddToCart={onAddToCart} />
               </div>
             {/each}
@@ -145,9 +145,9 @@
       {/each}
     {:else}
       <!-- Show flat grid when viewing specific category -->
-      <div class="grid {gridCols} gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB] mx-4">
         {#each filteredItems() as item (item.id)}
-          <div class="min-h-full">
+          <div class="relative border-r border-b border-gray-300 last:border-r-0 last:border-b-0 sm:last:border-r-0 sm:last:border-b-0 lg:last:border-r-0 lg:last:border-b-0 xl:last:border-r-0 xl:last:border-b-0">
             <MenuItemWithIgnore item={item} onAddToCart={onAddToCart} />
           </div>
         {/each}
@@ -156,7 +156,7 @@
     
     <!-- Results count -->
     <div class="mt-8 text-center">
-      <p class="text-sm text-gray-500">
+      <p class="text-sm text-white">
         Showing {filteredItems().length} 
         {filteredItems().length === 1 ? 'item' : 'items'}
         {#if searchQuery.trim()}

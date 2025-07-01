@@ -4,3 +4,4 @@ export { default as MenuItem } from './MenuItem.svelte';
 export { default as MenuCategory } from './MenuCategory.svelte';
 // @ts-ignore - Svelte components are handled by the preprocessor
 export { default as MenuGrid } from './MenuGrid.svelte';
+export { default as ListMenuItem } from './ListMenuItem.svelte';

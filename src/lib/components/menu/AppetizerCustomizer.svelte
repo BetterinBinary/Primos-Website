@@ -162,8 +162,12 @@
     </div>
   </div>
 
-  <!-- Price Summary -->
-  <div class="bg-gray-50 rounded-lg p-3">
+        <!-- Price Summary -->
+      <div class="bg-[#F4F2EB] rounded-lg p-3 relative overflow-hidden">
+        <!-- Noise overlay -->
+        <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+        <!-- Content wrapper -->
+        <div class="relative z-10">
     <div class="flex justify-between items-center">
       <span class="text-sm text-gray-600">Base Price × {quantity}</span>
       <span class="text-sm text-gray-900">${((item.basePrice || 0) * quantity).toFixed(2)}</span>
@@ -179,7 +183,8 @@
       <span class="text-gray-900">Total</span>
       <span class="text-lg text-primos-red-600">${totalPrice().toFixed(2)}</span>
     </div>
-  </div>
+        </div>
+      </div>
 
   <!-- Action Buttons -->
   <div class="flex space-x-3">

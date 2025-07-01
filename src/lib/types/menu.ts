@@ -425,3 +425,59 @@ export interface SeafoodMenuItem extends MenuItem {
   pieceCount?: number;
   weight?: string;
 }
+
+// BBQ Ribs-specific types
+export type RibPortion = 'whole-slab' | 'short-ends' | 'long-ends' | 'rib-snacks';
+export type BBQSauceLevel = 'light' | 'regular' | 'extra' | 'on-side';
+export type RibDoneness = 'tender' | 'fall-off-bone' | 'well-done';
+
+// BBQ sauce option with spice level
+export interface BBQSauceOption {
+  id: string;
+  name: string;
+  spiceLevel?: number;
+  available: boolean;
+}
+
+// BBQ ribs customization options
+export interface BBQRibsCustomization {
+  sauceLevel?: BBQSauceLevel;
+  doneness?: RibDoneness;
+  selectedSauces?: BBQSauceOption[];
+  extraSides?: string[];
+  specialInstructions?: string;
+}
+
+// Enhanced MenuItem for BBQ ribs
+export interface BBQRibsMenuItem extends MenuItem {
+  category: 'bbq-ribs';
+  ribPortion: RibPortion;
+  boneCount?: number;
+  includes?: string[];
+  servingSize?: string; // e.g., "for two"
+}
+
+// Combination Plates-specific types
+export type CombinationType = 'ribs-chicken' | 'ribs-shrimp' | 'chicken-fish' | 'ribs-fish' | 'shrimp-frog-legs' | 'primo-smorgasbord';
+
+// Combination plate special requests
+export interface CombinationPlateOptions {
+  cookingPreference?: string;
+  sideSubstitutions?: string[];
+  specialInstructions?: string;
+}
+
+// Combination plates customization options
+export interface CombinationPlateCustomization {
+  options?: CombinationPlateOptions;
+  specialInstructions?: string;
+}
+
+// Enhanced MenuItem for combination plates
+export interface CombinationPlateMenuItem extends MenuItem {
+  category: 'combination-plates';
+  combinationType: CombinationType;
+  proteins: string[];
+  includes?: string[];
+  servingDescription?: string;
+}

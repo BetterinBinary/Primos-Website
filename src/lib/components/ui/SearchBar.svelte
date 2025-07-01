@@ -75,7 +75,7 @@
       <!-- Search icon -->
       <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <svg 
-          class="h-5 w-5 text-gray-400" 
+          class="h-5 w-5 text-gray-600" 
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"
@@ -113,11 +113,11 @@
         <button
           type="button"
           onclick={clearSearch}
-          class="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-600 transition-colors duration-200"
+          class="absolute inset-y-0 right-0 pr-3 flex items-center hover:text-gray-700 transition-colors duration-200"
           aria-label="Clear search"
         >
           <svg 
-            class="h-5 w-5 text-gray-400" 
+            class="h-5 w-5 text-gray-600" 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
@@ -136,13 +136,13 @@
     <!-- Search suggestions (if query is provided but could be enhanced) -->
     {#if internalQuery.length > 0 && isFocused}
       <div class="search-suggestions">
-        <div class="px-3 py-2 text-xs text-gray-500 border-b">
+        <div class="px-3 py-2 text-xs text-gray-700 border-b border-gray-300">
           Search tips:
         </div>
-        <div class="px-3 py-2 text-sm text-gray-600">
+        <div class="px-3 py-2 text-sm text-gray-800">
           • Try searching by item name, ingredient, or dietary restriction
         </div>
-        <div class="px-3 py-2 text-sm text-gray-600">
+        <div class="px-3 py-2 text-sm text-gray-800">
           • Use terms like "vegetarian", "spicy", or "gluten-free"
         </div>
       </div>
@@ -177,7 +177,7 @@
 
   .search-suggestions {
     @apply absolute top-full left-0 right-0 mt-1 
-           bg-[#F4F2EB] border border-gray-200 rounded-lg shadow-lg
+           bg-[#F4F2EB] border border-gray-300 rounded-lg shadow-lg
            z-10 max-h-48 overflow-y-auto relative overflow-hidden;
   }
 
