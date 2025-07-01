@@ -5,6 +5,7 @@
     isCartOpen, 
     toggleCart 
   } from '$lib/stores/cart-store.svelte.js';
+  import { CartIcon } from '$lib/components/icons/index.js';
 
   let { currentPage = '' } = $props();
   let isMobileMenuOpen = $state(false);
@@ -32,8 +33,8 @@
   }
 </script>
 
-<header class="bg-primos-blue-500 text-white shadow-lg">
-  <div class="container mx-auto px-4">
+<header class="bg-primos-blue-500 text-white shadow-lg relative z-50 sticky top-0">
+  <div class="container mx-auto px-8">
     <nav class="flex items-center justify-between h-16">
       <!-- Logo -->
       <div class="flex-shrink-0">
@@ -73,14 +74,7 @@
           class="relative p-2 text-primos-blue-100 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primos-blue-500"
           aria-label="Shopping cart with {cartItemCount()} items"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4m2.6 8L6 5H3m4 8a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z"
-            />
-          </svg>
+          <CartIcon class="w-6 h-6" size={24} />
           {#if cartItemCount() > 0}
             <span
               class="absolute -top-1 -right-1 bg-primos-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse"
@@ -136,4 +130,10 @@
       </div>
     {/if}
   </div>
+  <!-- Bottom border -->
+  <div class="absolute bottom-0 left-0 right-0 h-px bg-amber-300/40"></div>
+  
+  <!-- Ornamental corner diamonds -->
+  <div class="absolute bottom-[-3px] left-0 w-2 h-2 bg-[#F4F2EB] border border-gray-400/50 transform rotate-45 z-[70]"></div>
+  <div class="absolute bottom-[-3px] right-0 w-2 h-2 bg-[#F4F2EB] border border-gray-400/50 transform rotate-45 z-[70]"></div>
 </header>

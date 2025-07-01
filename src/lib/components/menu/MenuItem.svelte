@@ -169,13 +169,16 @@
 </script>
 
 <article
-  class="menu-item bg-[#F4F2EB] p-6 flex flex-col justify-between h-full relative overflow-hidden"
+  class="menu-item bg-[#F4F2EB] p-6 flex flex-col relative transition-all duration-300 ease-in-out h-full"
+  style={showCustomizer ? 'min-height: auto;' : ''}
 >
   <!-- Noise overlay -->
   <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
   
   <!-- Content wrapper -->
   <div class="relative z-10 flex flex-col h-full">
+  <!-- Top content that can expand -->
+  <div class="flex-1 flex flex-col">
   <!-- Top section: Name, Description, and Image -->
   <div class="flex justify-between items-start gap-4 mb-4">
     <div class="flex-1">
@@ -208,6 +211,7 @@
 
   <!-- Customization Options -->
   {#if showCustomizer}
+    <div transition:slide={{ duration: 300 }}>
     {#if item.category === 'bbq-ribs'}
       <!-- BBQ Ribs Customizer -->
       <BBQRibsCustomizer
@@ -236,7 +240,7 @@
       />
     {:else}
       <!-- Generic Customizer for other items -->
-      <div class="space-y-4 mb-4 border-t border-gray-200 pt-4" transition:slide={{ duration: 300 }}>
+      <div class="space-y-4 mb-4 border-t border-gray-200 pt-4">
       <!-- Size Selection -->
       {#if item.sizes && item.sizes.length > 0}
         <div>
@@ -353,17 +357,18 @@
       </div>
     </div>
     {/if}
+    </div>
   {/if}
 
   <!-- Additional Info -->
-  <div class="mb-4 space-y-2">
-    <!-- Allergen Warning -->
-    {#if item.allergens && item.allergens.length > 0}
+  {#if item.allergens && item.allergens.length > 0}
+    <div class="space-y-2">
       <p class="text-xs text-yellow-600">
         ⚠️ Contains: {item.allergens.join(", ")}
       </p>
-    {/if}
-  </div>
+    </div>
+  {/if}
+  </div> <!-- End of flex-1 top content -->
 
   <!-- Bottom section: Price and Add to Cart -->
   <div class="mt-auto">

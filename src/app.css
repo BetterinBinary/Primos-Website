@@ -35,7 +35,7 @@
 
   /* Card styles */
   .card {
-    @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300;
+    @apply bg-white shadow-md p-6 hover:shadow-lg transition-shadow duration-300;
   }
 
 
@@ -67,6 +67,16 @@
 
   .animate-slide-up {
     animation: slideUp 0.3s ease-out;
+  }
+
+  /* Hide scrollbar for webkit browsers */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
   }
 
   @keyframes fadeIn {

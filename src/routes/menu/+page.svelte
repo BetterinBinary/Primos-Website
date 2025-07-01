@@ -5,6 +5,7 @@
   import SearchBar from "$lib/components/ui/SearchBar.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
+  import { GridIcon, ListIcon } from "$lib/components/icons/index.js";
   import {
     menuData,
     loading,
@@ -22,10 +23,7 @@
     initializeMenuData
   } from "$lib/stores/menu-store.svelte.js";
   import {
-    addToCart,
-    cartSummary,
-    isCartOpen,
-    toggleCart
+    addToCart
   } from "$lib/stores/cart-store.svelte.js";
   import type { MenuItem as MenuItemType } from "$lib/types/menu";
 
@@ -131,27 +129,10 @@
         {getRestaurantName()}
       </h1>
       <p class="text-primos-gold-500">Our signature hand-tossed pizzas and more</p>
-      
-      <!-- Cart Toggle Button -->
-      <div class="mt-4">
-        <ButtonWithIgnore
-          variant="secondary"
-          onclick={toggleCart}
-          class="relative"
-        >
-          🛒 Cart
-          {#if cartSummary().itemCount > 0}
-            <span class="absolute -top-2 -right-2 bg-primos-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              {cartSummary().itemCount}
-            </span>
-          {/if}
-        </ButtonWithIgnore>
-      </div>
     </header>
 
-    <!-- Enhanced Search and Filter Controls -->
-    <div class="mb-8 space-y-6">
-      <!-- Search Bar with enhanced functionality -->
+    <!-- Search Bar -->
+    <div class="mb-6">
       <div class="max-w-2xl mx-auto">
         <SearchBarWithIgnore
           searchQuery={searchQuery()}
@@ -162,67 +143,127 @@
           showClearButton={true}
         />
       </div>
+    </div>
 
-      <!-- View Controls and Stats -->
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div class="flex items-center gap-4">
-          <!-- View Mode Toggle -->
-          <ButtonWithIgnore
-            variant="outline"
-            size="sm"
-            class="!border-white !text-white hover:!bg-white hover:!text-primos-blue-500 focus:!ring-white"
-            onclick={handleViewModeToggle}
-          >
-            {viewMode() === 'grid' ? '📋 List View' : '⊞ Grid View'}
-          </ButtonWithIgnore>
+    <!-- Sticky Categories -->
+    <div class="sticky top-16 z-50 bg-primos-blue-500">
+      <div class="container mx-auto">
+        <div class="bg-[#F4F2EB] border border-gray-300 relative overflow-visible">
+          <!-- Ornamental corner diamonds -->
+          <div class="absolute -top-[5px] -left-[6px] w-2 h-2 bg-[#F4F2EB] border border-gray-400/50 transform rotate-45 z-[70]"></div>
+          <div class="absolute -top-[5px] -right-[6px] w-2 h-2 bg-[#F4F2EB] border border-gray-400/50 transform rotate-45 z-[70]"></div>
           
-          <!-- Reset Filters -->
-          {#if selectedCategory() !== 'all' || searchQuery().trim()}
-            <ButtonWithIgnore
-              variant="ghost"
-              size="sm"
-              class="!text-white hover:!bg-white hover:!text-primos-blue-500 focus:!ring-white"
-              onclick={handleResetFilters}
-            >
-              Clear Filters
-            </ButtonWithIgnore>
-          {/if}
-        </div>
-        
-        <!-- Menu Stats -->
-        <div class="text-sm text-white">
-          Showing {menuStats().filteredItems} of {menuStats().totalItems} items
-        </div>
-      </div>
 
-      <!-- Category Filter with improved design -->
-      <div class="flex flex-wrap justify-center gap-2">
-        <ButtonWithIgnore
-          variant={selectedCategory() === 'all' ? 'secondary' : 'outline'}
-          size="sm"
-          class={selectedCategory() !== 'all' ? '!border-white !text-white hover:!bg-white hover:!text-primos-blue-500 focus:!ring-white' : ''}
-          onclick={() => handleCategorySelect('all')}
-        >
-          All Items ({menuStats().totalItems})
-        </ButtonWithIgnore>
-        {#each availableCategories() as category}
-          <ButtonWithIgnore
-            variant={selectedCategory() === category.id ? 'secondary' : 'outline'}
-            size="sm"
-            class={selectedCategory() !== category.id ? '!border-white !text-white hover:!bg-white hover:!text-primos-blue-500 focus:!ring-white' : ''}
-            onclick={() => handleCategorySelect(category.id)}
-          >
-            {category.name} ({category.items.filter(isItemAvailable).length})
-          </ButtonWithIgnore>
-        {/each}
+          
+          <!-- Ornamental lines -->
+          
+          <!-- Vertical lines going up from diamonds to top of page -->
+          <div class="absolute -top-1 -left-0.5 w-px bg-amber-300/40 z-10" style="height: 100vh; top: -100vh;"></div>
+          <div class="absolute -top-1 -right-0.5 w-px bg-amber-300/40 z-10" style="height: 100vh; top: -100vh;"></div>
+          
+          <!-- Horizontal lines extending to browser edges -->
+          <div class="absolute -top-px left-1 h-px bg-amber-300/40 z-20" style="width: 100vw; margin-left: -50vw; left: 50%;"></div>
+          <div class="absolute -top-px right-1 h-px bg-amber-300/40 z-20" style="width: 100vw; margin-right: -50vw; right: 50%;"></div>
+          
+          <!-- Noise overlay -->
+          <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+          <div class="relative z-10">
+            <div class="flex overflow-x-auto scrollbar-hide">
+              <div class="flex-shrink-0 border-r border-gray-300">
+                <button
+                  class={`w-full px-4 py-3 text-sm font-medium transition-colors duration-200 whitespace-nowrap relative overflow-hidden ${
+                    selectedCategory() === 'all' 
+                      ? 'bg-primos-gold-500 text-primos-blue-900' 
+                      : 'bg-transparent text-gray-700 hover:bg-gray-200'
+                  }`}
+                  onclick={() => handleCategorySelect('all')}
+                >
+                  {#if selectedCategory() === 'all'}
+                    <!-- Noise overlay for selected state -->
+                    <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+                  {/if}
+                  <span class="relative z-10">All Items ({menuStats().totalItems})</span>
+                </button>
+              </div>
+              {#each availableCategories() as category}
+                <div class="flex-shrink-0 border-r border-gray-300 last:border-r-0">
+                  <button
+                    class={`w-full px-4 py-3 text-sm font-medium transition-colors duration-200 whitespace-nowrap relative overflow-hidden ${
+                      selectedCategory() === category.id 
+                        ? 'bg-primos-gold-500 text-primos-blue-900' 
+                        : 'bg-transparent text-gray-700 hover:bg-gray-200'
+                    }`}
+                    onclick={() => handleCategorySelect(category.id)}
+                  >
+                    {#if selectedCategory() === category.id}
+                      <!-- Noise overlay for selected state -->
+                      <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+                    {/if}
+                    <span class="relative z-10">{category.name} ({category.items.filter(isItemAvailable).length})</span>
+                  </button>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- View Controls and Stats -->
+    <div class="bg-[#F4F2EB] border border-gray-300 relative overflow-hidden">
+        <!-- Noise overlay -->
+        <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+        <div class="relative z-10">
+                      <div class="flex flex-col sm:flex-row">
+              <div class="flex flex-1 border-r border-gray-300 sm:border-r sm:border-b-0 border-b">
+                <div class="flex h-full">
+                  <!-- View Mode Toggle -->
+                  <div class="flex-shrink-0 border-r border-gray-300 last:border-r-0">
+                    <button
+                      class="w-full h-full px-6 py-2 text-sm font-medium transition-colors duration-200 text-gray-700 hover:bg-gray-200 whitespace-nowrap"
+                      onclick={handleViewModeToggle}
+                    >
+                      <div class="flex items-center gap-2">
+                        {#if viewMode() === 'grid'}
+                          <ListIcon size={18} />
+                          <span>List View</span>
+                        {:else}
+                          <GridIcon size={18} />
+                          <span>Grid View</span>
+                        {/if}
+                      </div>
+                    </button>
+                  </div>
+                  
+                  <!-- Reset Filters -->
+                  {#if selectedCategory() !== 'all' || searchQuery().trim()}
+                    <div class="flex-1 border-r border-gray-300 last:border-r-0">
+                      <button
+                        class="w-full h-full px-4 py-2 text-sm font-medium transition-colors duration-200 text-gray-700 hover:bg-gray-200 whitespace-nowrap"
+                        onclick={handleResetFilters}
+                      >
+                        Clear Filters
+                      </button>
+                    </div>
+                  {/if}
+                </div>
+              </div>
+              
+              <!-- Menu Stats -->
+              <div class="flex-shrink-0 px-4 py-2 border-t border-gray-300 sm:border-t-0 sm:border-l">
+                <div class="text-sm text-gray-700 font-medium">
+                  Showing {menuStats().filteredItems} of {menuStats().totalItems} items
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 
     <!-- Enhanced Menu Display -->
     <div class="min-h-[400px]">
       {#if viewMode() === 'grid'}
         <!-- Grid View - Paper Menu Style -->
-        <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 rounded-lg overflow-hidden bg-[#F4F2EB]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB]">
           {#each filteredMenuItems() as item, index (item.id)}
             <div class="relative border-r border-b border-gray-300 last:border-r-0 last:border-b-0 sm:last:border-r-0 sm:last:border-b-0 lg:last:border-r-0 lg:last:border-b-0 xl:last:border-r-0 xl:last:border-b-0">
               <MenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
@@ -231,7 +272,7 @@
         </div>
       {:else}
         <!-- List View -->
-        <div class="max-w-6xl mx-auto bg-[#F4F2EB] border border-gray-300 overflow-hidden relative">
+        <div class="bg-[#F4F2EB] border border-gray-300 overflow-hidden relative">
           <!-- Noise overlay -->
           <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none z-0"></div>
           <div class="relative z-10 divide-y divide-gray-300">

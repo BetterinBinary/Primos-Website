@@ -95,7 +95,7 @@
       <div class="cart-drawer-header">
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-bold text-gray-900">
-            Shopping Cart
+            Pizza Cart
             {#if cartSummary().itemCount > 0}
               <span class="text-sm font-normal text-gray-600 ml-2">
                 ({cartSummary().itemCount} {cartSummary().itemCount === 1 ? 'item' : 'items'})

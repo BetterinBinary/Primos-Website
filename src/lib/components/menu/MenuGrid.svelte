@@ -100,7 +100,7 @@
           {/if}
         </p>
         <button
-          class="text-primos-gold-500 hover:text-white font-medium px-4 py-2 border border-primos-gold-500 rounded-lg hover:bg-primos-gold-500 transition-colors duration-200"
+          class="text-primos-gold-500 hover:text-white font-medium px-4 border border-primos-gold-500 rounded-lg hover:bg-primos-gold-500 transition-colors duration-200"
           onclick={() => {
             searchQuery = '';
             selectedCategory = 'all';
