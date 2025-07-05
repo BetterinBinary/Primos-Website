@@ -1,8 +1,11 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { Button } from '../ui/index.js';
+  import { ENABLE_ORDERING, ENABLE_CUSTOMIZATION } from '$lib/config/features.js';
   import BBQRibsCustomizer from './BBQRibsCustomizer.svelte';
   import CombinationPlatesCustomizer from './CombinationPlatesCustomizer.svelte';
+  import SeafoodCustomizer from './SeafoodCustomizer.svelte';
+  import ChickenCustomizer from './ChickenCustomizer.svelte';
   import type { 
     MenuItem, 
     Size, 
@@ -11,7 +14,11 @@
     BBQSauceLevel,
     RibDoneness,
     BBQSauceOption,
-    CombinationPlateOptions
+    CombinationPlateOptions,
+    SeafoodPreparation,
+    SeafoodSauceOption,
+    ChickenMeatSelection,
+    ChickenSauceOption
   } from '$lib/types/menu';
 
   interface Props {
@@ -32,6 +39,7 @@
   let selectedAddOns = $state<AddOn[]>([]);
   let quantity = $state(1);
   let showCustomizer = $state(false);
+  let imageError = $state(false);
   
   // BBQ Ribs specific state
   let selectedSauceLevel = $state<BBQSauceLevel>('regular');
@@ -45,12 +53,35 @@
     specialInstructions: ''
   });
   
-  // Determine if item has customization options
+  // Seafood specific state
+  let selectedPreparation = $state<SeafoodPreparation>('regular');
+  let selectedSeafoodSauces = $state<SeafoodSauceOption[]>([]);
+  let selectedSeafoodOrderType = $state<'only' | 'dinner'>('dinner');
+  let selectedSeafoodPieces = $state<Record<string, number>>({});
+  let selectedSeafoodSides = $state<string[]>(['ff', 'slaw', 'roll']);
+  
+  // Chicken specific state
+  let selectedMeatSelection = $state<ChickenMeatSelection>('mixed');
+  let isBBQStyle = $state(false);
+  let selectedChickenSauces = $state<ChickenSauceOption[]>([]);
+  let selectedChickenOrderType = $state<'only' | 'dinner'>('dinner');
+  let selectedChickenPieces = $state<Record<string, number>>({});
+  let selectedChickenSides = $state<string[]>(['ff', 'slaw', 'roll']);
+  let useChickenPieceSelection = $state(false);
+  
+  // Determine if item has customization options and customization is enabled
   const hasCustomizations = $derived(() => {
-    return (item.sizes && item.sizes.length > 1) || 
-           (item.toppings?.extraItems && item.toppings.extraItems.length > 0) ||
-           (item.category === 'bbq-ribs') ||
-           (item.category === 'combination-plates');
+    return ENABLE_CUSTOMIZATION && (
+      (item.sizes && item.sizes.length > 1) || 
+      (item.toppings?.extraItems && item.toppings.extraItems.length > 0) ||
+      (item.category === 'bbq-ribs') ||
+      (item.category === 'combination-plates') ||
+      (item.category === 'seafood') ||
+      (item.category === 'hand-battered-shrimp') ||
+      (item.category === 'chicken') ||
+      (item.category === 'chicken-tenderloins') ||
+      (item.category === 'wing-dings')
+    );
   });
 
   const basePrice = $derived(
@@ -104,6 +135,84 @@
   function handleCombinationOptionsChange(options: CombinationPlateOptions) {
     combinationOptions = options;
   }
+  
+  // Seafood handlers
+  function handleSeafoodPreparationChange(prep: SeafoodPreparation) {
+    selectedPreparation = prep;
+  }
+  
+  function handleSeafoodSauceToggle(sauce: SeafoodSauceOption) {
+    const index = selectedSeafoodSauces.findIndex(s => s.id === sauce.id);
+    if (index > -1) {
+      selectedSeafoodSauces.splice(index, 1);
+    } else {
+      selectedSeafoodSauces.push(sauce);
+    }
+  }
+  
+  function handleSeafoodOrderTypeChange(type: 'only' | 'dinner') {
+    selectedSeafoodOrderType = type;
+  }
+  
+  function handleSeafoodPieceChange(pieceId: string, quantity: number) {
+    if (quantity === 0) {
+      delete selectedSeafoodPieces[pieceId];
+    } else {
+      selectedSeafoodPieces[pieceId] = quantity;
+    }
+  }
+  
+  function handleSeafoodSideToggle(side: string) {
+    const index = selectedSeafoodSides.indexOf(side);
+    if (index > -1) {
+      selectedSeafoodSides.splice(index, 1);
+    } else {
+      selectedSeafoodSides.push(side);
+    }
+  }
+  
+  // Chicken handlers
+  function handleChickenMeatSelectionChange(selection: ChickenMeatSelection) {
+    selectedMeatSelection = selection;
+  }
+  
+  function handleChickenBBQStyleToggle(bbqStyle: boolean) {
+    isBBQStyle = bbqStyle;
+  }
+  
+  function handleChickenSauceToggle(sauce: ChickenSauceOption) {
+    const index = selectedChickenSauces.findIndex(s => s.id === sauce.id);
+    if (index > -1) {
+      selectedChickenSauces.splice(index, 1);
+    } else {
+      selectedChickenSauces.push(sauce);
+    }
+  }
+  
+  function handleChickenOrderTypeChange(type: 'only' | 'dinner') {
+    selectedChickenOrderType = type;
+  }
+  
+  function handleChickenPieceChange(pieceId: string, quantity: number) {
+    if (quantity === 0) {
+      delete selectedChickenPieces[pieceId];
+    } else {
+      selectedChickenPieces[pieceId] = quantity;
+    }
+  }
+  
+  function handleChickenSideToggle(side: string) {
+    const index = selectedChickenSides.indexOf(side);
+    if (index > -1) {
+      selectedChickenSides.splice(index, 1);
+    } else {
+      selectedChickenSides.push(side);
+    }
+  }
+  
+  function handleChickenPieceSelectionToggle(usePieces: boolean) {
+    useChickenPieceSelection = usePieces;
+  }
 
   function handleQuickAdd() {
     // Quick add with default selections - pass properly structured options
@@ -121,6 +230,45 @@
 
   function handleCustomize() {
     showCustomizer = true;
+  }
+
+  function handleImageError() {
+    imageError = true;
+  }
+
+  /**
+   * Format price display for the price area
+   * Returns object with all individual prices for vertical display
+   * Null-safe to handle malformed price data
+   */
+  function formatPriceDisplay(item: MenuItem): { single: string | null, allPrices: string[], fallback: string | null } {
+    if (item.sizes && item.sizes.length > 0) {
+      if (item.sizes.length === 1) {
+        const price = item.sizes[0]?.price;
+        if (price != null && !isNaN(price)) {
+          return { single: `$${price.toFixed(2)}`, allPrices: [], fallback: null };
+        }
+      } else {
+        // Get all valid prices with their size info, maintain original order
+        const allPrices = item.sizes
+          .filter(size => size?.price != null && !isNaN(size.price))
+          .map(size => `$${size.price.toFixed(2)}`);
+        
+        if (allPrices.length === 0) {
+          return { single: null, allPrices: [], fallback: 'Price varies' };
+        }
+        
+        if (allPrices.length === 1) {
+          return { single: allPrices[0], allPrices: [], fallback: null };
+        } else {
+          return { single: null, allPrices: allPrices, fallback: null };
+        }
+      }
+    } else if (item.basePrice != null && !isNaN(item.basePrice)) {
+      return { single: `$${item.basePrice.toFixed(2)}`, allPrices: [], fallback: null };
+    }
+    
+    return { single: null, allPrices: [], fallback: 'Price varies' };
   }
 
   function handleCustomizedAdd() {
@@ -141,6 +289,58 @@
       }
       if (combinationOptions.sideSubstitutions && combinationOptions.sideSubstitutions.length > 0) {
         customOptions.push(`Sides: ${combinationOptions.sideSubstitutions.join(', ')}`);
+      }
+    } else if (item.category === 'seafood' || item.category === 'hand-battered-shrimp') {
+      // Seafood specific options
+      customOptions.push(`Order Type: ${selectedSeafoodOrderType}`);
+      
+      if (selectedPreparation !== 'regular') {
+        customOptions.push(`Preparation: ${selectedPreparation}`);
+      }
+      
+      const totalSeafoodPieces = Object.values(selectedSeafoodPieces).reduce((sum, qty) => sum + qty, 0);
+      if (totalSeafoodPieces > 0) {
+        customOptions.push(`Individual Pieces: ${totalSeafoodPieces}`);
+      }
+      
+      if (selectedSeafoodSauces.length > 0) {
+        customOptions.push(`Sauces: ${selectedSeafoodSauces.map(s => s.name).join(', ')}`);
+      }
+      
+      if (selectedSeafoodOrderType === 'dinner' && selectedSeafoodSides.length > 3) {
+        const extraSides = selectedSeafoodSides.filter(side => !['ff', 'slaw', 'roll'].includes(side));
+        if (extraSides.length > 0) {
+          customOptions.push(`Extra Sides: ${extraSides.join(', ')}`);
+        }
+      }
+    } else if (item.category === 'chicken' || item.category === 'chicken-tenderloins' || item.category === 'wing-dings') {
+      // Chicken specific options
+      if (useChickenPieceSelection) {
+        customOptions.push(`Order Type: ${selectedChickenOrderType}`);
+        
+        const totalChickenPieces = Object.values(selectedChickenPieces).reduce((sum, qty) => sum + qty, 0);
+        if (totalChickenPieces > 0) {
+          customOptions.push(`Individual Pieces: ${totalChickenPieces}`);
+        }
+      } else {
+        if (selectedMeatSelection && selectedMeatSelection !== 'mixed') {
+          customOptions.push(`Meat Selection: ${selectedMeatSelection}`);
+        }
+      }
+      
+      if (isBBQStyle) {
+        customOptions.push('BBQ Style');
+      }
+      
+      if (selectedChickenSauces.length > 0) {
+        customOptions.push(`Sauces: ${selectedChickenSauces.map(s => s.name).join(', ')}`);
+      }
+      
+      if ((useChickenPieceSelection || item.category === 'chicken-tenderloins' || item.category === 'wing-dings') && selectedChickenOrderType === 'dinner' && selectedChickenSides.length > 3) {
+        const extraSides = selectedChickenSides.filter(side => !['ff', 'slaw', 'roll'].includes(side));
+        if (extraSides.length > 0) {
+          customOptions.push(`Extra Sides: ${extraSides.join(', ')}`);
+        }
       }
     } else {
       // Generic customization for other items
@@ -179,11 +379,11 @@
   <div class="relative z-10 flex flex-col h-full">
   <!-- Top content that can expand -->
   <div class="flex-1 flex flex-col">
-  <!-- Top section: Name, Description, and Image -->
+  <!-- Top section: Name, Description, and Price -->
   <div class="flex justify-between items-start gap-4 mb-4">
     <div class="flex-1">
       <!-- Item title -->
-      <h3 class="text-lg font-semibold text-gray-900 mb-3">
+      <h3 class="text-lg font-bold text-black mb-3 font-sans">
         {item.name}
       </h3>
 
@@ -193,24 +393,28 @@
       </p>
     </div>
 
-    <!-- Item image -->
-    <div
-      class="w-24 h-24 bg-gray-200 flex items-center justify-center flex-shrink-0"
-    >
-      {#if item.image}
-        <img
-          src="/images/menu/{item.image}"
-          alt="{item.name} from Primos Pizza"
-          class="w-full h-full object-cover"
-        />
-      {:else}
-        <span class="text-gray-400 text-xl">🍕</span>
+    <!-- Price display (right side, top aligned) -->
+    <div class="flex-shrink-0 flex flex-col items-end justify-start">
+      {#if formatPriceDisplay(item).single}
+        <span class="text-lg font-bold text-black font-sans leading-tight">
+          {formatPriceDisplay(item).single}
+        </span>
+      {:else if formatPriceDisplay(item).allPrices.length > 0}
+        {#each formatPriceDisplay(item).allPrices as price}
+          <span class="text-lg font-bold text-black font-sans leading-tight">
+            {price}
+          </span>
+        {/each}
+      {:else if formatPriceDisplay(item).fallback}
+        <span class="text-sm font-bold text-black font-sans leading-tight">
+          {formatPriceDisplay(item).fallback}
+        </span>
       {/if}
     </div>
   </div>
 
-  <!-- Customization Options -->
-  {#if showCustomizer}
+  <!-- Customization Options (hidden when customization disabled) -->
+  {#if showCustomizer && ENABLE_CUSTOMIZATION}
     <div transition:slide={{ duration: 300 }}>
     {#if item.category === 'bbq-ribs'}
       <!-- BBQ Ribs Customizer -->
@@ -234,6 +438,48 @@
         selectedOptions={combinationOptions}
         quantity={quantity}
         onOptionsChange={handleCombinationOptionsChange}
+        onQuantityChange={handleQuantityChange}
+        onAddToCart={handleCustomizedAdd}
+        onCancel={() => showCustomizer = false}
+      />
+    {:else if item.category === 'seafood' || item.category === 'hand-battered-shrimp'}
+      <!-- Seafood Customizer -->
+      <SeafoodCustomizer
+        item={item}
+        selectedPreparation={selectedPreparation}
+        selectedSauces={selectedSeafoodSauces}
+        selectedOrderType={selectedSeafoodOrderType}
+        selectedPieces={selectedSeafoodPieces}
+        selectedSides={selectedSeafoodSides}
+        quantity={quantity}
+        onPreparationChange={handleSeafoodPreparationChange}
+        onSauceToggle={handleSeafoodSauceToggle}
+        onOrderTypeChange={handleSeafoodOrderTypeChange}
+        onPieceChange={handleSeafoodPieceChange}
+        onSideToggle={handleSeafoodSideToggle}
+        onQuantityChange={handleQuantityChange}
+        onAddToCart={handleCustomizedAdd}
+        onCancel={() => showCustomizer = false}
+      />
+    {:else if item.category === 'chicken' || item.category === 'chicken-tenderloins' || item.category === 'wing-dings'}
+      <!-- Chicken Customizer -->
+      <ChickenCustomizer
+        item={item}
+        selectedMeatSelection={selectedMeatSelection}
+        isBBQStyle={isBBQStyle}
+        selectedSauces={selectedChickenSauces}
+        selectedOrderType={selectedChickenOrderType}
+        selectedPieces={selectedChickenPieces}
+        selectedSides={selectedChickenSides}
+        usePieceSelection={useChickenPieceSelection}
+        quantity={quantity}
+        onMeatSelectionChange={handleChickenMeatSelectionChange}
+        onBBQStyleToggle={handleChickenBBQStyleToggle}
+        onSauceToggle={handleChickenSauceToggle}
+        onOrderTypeChange={handleChickenOrderTypeChange}
+        onPieceChange={handleChickenPieceChange}
+        onSideToggle={handleChickenSideToggle}
+        onPieceSelectionToggle={handleChickenPieceSelectionToggle}
         onQuantityChange={handleQuantityChange}
         onAddToCart={handleCustomizedAdd}
         onCancel={() => showCustomizer = false}
@@ -373,24 +619,16 @@
   <!-- Bottom section: Price and Add to Cart -->
   <div class="mt-auto">
     <!-- Price and availability section -->
-    <div class="flex flex-row items-center justify-center mb-4">
-      <span class="text-primos-red-600 font-bold text-xl">
-        {#if !showCustomizer}
-          ${(item.sizes?.[0]?.price || item.basePrice || 0).toFixed(2)}
-        {:else}
-          ${totalPrice.toFixed(2)}
-        {/if}
-      </span>
-
-      {#if !item.available}
-        <span class="text-red-500 text-sm font-medium ml-2">
+    {#if !item.available}
+      <div class="flex justify-center mb-4">
+        <span class="text-red-500 text-sm font-medium">
           Currently Unavailable
         </span>
-      {/if}
-    </div>
+      </div>
+    {/if}
 
-    <!-- Action buttons -->
-    {#if item.available}
+    <!-- Action buttons (hidden when ordering disabled) -->
+    {#if item.available && ENABLE_ORDERING}
       {#if !showCustomizer}
         <!-- Quick Add / Customize Options -->
         {#if hasCustomizations()}

@@ -9,3 +9,6 @@ export * from './menu/index.js';
 
 // Cart components
 export * from './cart/index.js';
+
+// Navigation components
+export * from './navigation/index.js';

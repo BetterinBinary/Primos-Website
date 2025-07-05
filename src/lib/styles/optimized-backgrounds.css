@@ -1,0 +1,109 @@
+/* Optimized Background Textures - Generated CSS */
+
+/* Background texture variants */
+.bg-primos-pattern-small {
+  background-image: url('/optimized/background-small.webp');
+  background-size: 512px 288px;
+  background-repeat: repeat;
+}
+
+.bg-primos-pattern-medium {
+  background-image: url('/optimized/background-medium.webp');
+  background-size: 768px 432px;
+  background-repeat: repeat;
+}
+
+.bg-primos-pattern-large {
+  background-image: url('/optimized/background-large.webp');
+  background-size: 1366px 768px;
+  background-repeat: repeat;
+}
+
+/* Noise overlay variants */
+.noise-overlay-tile {
+  background-image: url('/optimized/noise-tile.webp');
+  background-size: 256px 256px;
+  background-repeat: repeat;
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+}
+
+.noise-overlay-medium {
+  background-image: url('/optimized/noise-medium.webp');
+  background-size: 512px 512px;
+  background-repeat: repeat;
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+}
+
+.noise-overlay-large {
+  background-image: url('/optimized/noise-large.webp');
+  background-size: 768px 768px;
+  background-repeat: repeat;
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+}
+
+/* Fallbacks for browsers without WebP support */
+@supports not (background-image: url('data:image/webp,')) {
+  .bg-primos-pattern-small {
+    background-image: url('/optimized/background-small.png');
+  }
+  
+  .bg-primos-pattern-medium {
+    background-image: url('/optimized/background-medium.png');
+  }
+  
+  .bg-primos-pattern-large {
+    background-image: url('/optimized/background-large.png');
+  }
+  
+  .noise-overlay-tile {
+    background-image: url('/optimized/noise-tile.png');
+  }
+  
+  .noise-overlay-medium {
+    background-image: url('/optimized/noise-medium.png');
+  }
+  
+  .noise-overlay-large {
+    background-image: url('/optimized/noise-large.png');
+  }
+}
+
+/* Responsive background patterns */
+@media (max-width: 768px) {
+  .bg-primos-pattern-responsive {
+    background-image: url('/optimized/background-small.webp');
+    background-size: 512px 288px;
+  }
+  
+  .noise-overlay-responsive {
+    background-image: url('/optimized/noise-tile.webp');
+    background-size: 256px 256px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .bg-primos-pattern-responsive {
+    background-image: url('/optimized/background-medium.webp');
+    background-size: 768px 432px;
+  }
+  
+  .noise-overlay-responsive {
+    background-image: url('/optimized/noise-medium.webp');
+    background-size: 512px 512px;
+  }
+}
+
+@media (min-width: 1201px) {
+  .bg-primos-pattern-responsive {
+    background-image: url('/optimized/background-large.webp');
+    background-size: 1366px 768px;
+  }
+  
+  .noise-overlay-responsive {
+    background-image: url('/optimized/noise-large.webp');
+    background-size: 768px 768px;
+  }
+}

@@ -239,6 +239,15 @@ test('component renders correctly', () => {
 });
 ```
 
+### Project Aliases
+Use configured aliases for clean imports:
+```javascript
+import { Button } from '$components/ui';
+import { PricingCalculator } from '$utils/pricing';
+import type { MenuItem } from '$types/menu';
+import menuData from '$data/menu_complete.json';
+```
+
 ## Migration Context
 
 ### Current Phase
@@ -321,6 +330,12 @@ This command will automatically research Svelte documentation, analyze the error
 
 ### ESLint Configuration
 Uses simplified configuration without TypeScript conflicts. Override rules in `.eslintrc.cjs` for project-specific requirements.
+
+### Development Environment Setup
+- **Node.js**: ES2022 module support required
+- **Package Manager**: npm (package-lock.json committed)
+- **Port Configuration**: Dev server (5173), Preview (4173)
+- **VS Code Extensions**: Svelte for VS Code, Tailwind CSS IntelliSense recommended
 
 ## Claude Commands
 

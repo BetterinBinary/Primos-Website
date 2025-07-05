@@ -128,8 +128,14 @@ export interface CartItem {
   selectedSize?: string;
   selectedToppings?: string[];
   selectedOptions?: string[];
+  selectedPieces?: Record<string, number>;
+  orderType?: OrderType;
+  selectedSides?: string[];
+  selectedSauces?: string[];
+  usePieceSelection?: boolean;
   specialInstructions?: string;
   totalPrice: number;
+  pricingBreakdown?: PricingCalculation;
 }
 
 export interface Cart {
@@ -480,4 +486,103 @@ export interface CombinationPlateMenuItem extends MenuItem {
   proteins: string[];
   includes?: string[];
   servingDescription?: string;
+}
+
+// Individual Piece Selection Types
+export interface PieceOption {
+  id: string;
+  name: string;
+  price: number;
+  description?: string;
+  category?: 'white-meat' | 'dark-meat' | 'seafood' | 'specialty';
+}
+
+// Individual piece selection state
+export interface PieceSelection {
+  pieceId: string;
+  quantity: number;
+  price: number;
+}
+
+// Order type for "Only" vs "Dinner" pricing
+export type OrderType = 'only' | 'dinner';
+
+// Side options with pricing
+export interface SideOption {
+  id: string;
+  name: string;
+  included?: boolean;
+  upcharge?: number;
+  category?: 'standard' | 'premium';
+}
+
+// Enhanced seafood types with individual pieces
+export interface SeafoodPieceCustomization extends SeafoodCustomization {
+  orderType?: OrderType;
+  selectedPieces?: Record<string, number>;
+  selectedSides?: string[];
+}
+
+// Enhanced chicken types with individual pieces
+export interface ChickenPieceCustomization extends ChickenCustomization {
+  orderType?: OrderType;
+  selectedPieces?: Record<string, number>;
+  selectedSides?: string[];
+  usePieceSelection?: boolean;
+}
+
+// Builder pattern for complex orders
+export interface OrderBuilder {
+  category: string;
+  baseItem?: MenuItem;
+  pieces?: PieceSelection[];
+  orderType?: OrderType;
+  sides?: string[];
+  sauces?: string[];
+  customizations?: Record<string, any>;
+  quantity?: number;
+  specialInstructions?: string;
+}
+
+// POS Integration Types
+export interface POSOrderItem {
+  category: string;
+  type: string[];
+  size: (string | number)[];
+  topping: string[];
+  sauce?: string[];
+  side?: string[];
+  quantity: number;
+  price: string;
+  tracker: {
+    type?: Record<string, number>;
+    size?: Record<string, number>;
+    topping?: Record<string, number>;
+    sauce?: Record<string, number>;
+    side?: Record<string, number>;
+  };
+}
+
+// Smorgasbord specific types
+export interface SmorgasbordSelection {
+  proteins: string[];
+  defaultProteins: string[];
+  maxProteins: number;
+  basePrice: number;
+}
+
+// Complex pricing calculation interface
+export interface PricingCalculation {
+  basePrice: number;
+  piecePrice?: number;
+  onlyDiscount?: number;
+  sideUpcharge?: number;
+  bbqSurcharge?: number;
+  taxAmount?: number;
+  finalTotal: number;
+  breakdown: {
+    label: string;
+    amount: number;
+    type: 'addition' | 'discount' | 'multiplier';
+  }[];
 }

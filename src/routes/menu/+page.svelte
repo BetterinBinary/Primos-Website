@@ -6,6 +6,7 @@
   import Button from "$lib/components/ui/Button.svelte";
   import LoadingSpinner from "$lib/components/ui/LoadingSpinner.svelte";
   import { GridIcon, ListIcon } from "$lib/components/icons/index.js";
+  import { CategoryNavigation, CategorySection, HorizontalScrollNavigation } from "$lib/components/navigation/index.js";
   import {
     menuData,
     loading,
@@ -25,6 +26,11 @@
   import {
     addToCart
   } from "$lib/stores/cart-store.svelte.js";
+  import {
+    updateScrollPosition,
+    cleanup
+  } from "$lib/stores/navigation-store.svelte.js";
+  import { ENABLE_ORDERING } from "$lib/config/features.js";
   import type { MenuItem as MenuItemType } from "$lib/types/menu";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,20 +63,34 @@
     } else {
       console.log('✨ Menu data already available');
     }
+
+    // Setup scroll listener for navigation
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', updateScrollPosition, { passive: true });
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('scroll', updateScrollPosition);
+      }
+      cleanup();
+    };
   });
 
   function handleAddToCart(item: MenuItemType) {
-    // For now, add with default options - this will be enhanced later
-    const success = addToCart(item, {
-      selectedSize: item.sizes?.[0] || null,
-      selectedToppings: [],
-      selectedAddOns: [],
-      quantity: 1
-    });
-    
-    if (success) {
-      // Optional: Show success feedback or auto-open cart
-      console.log(`Added ${item.name} to cart`);
+    // Cart functionality preserved but only functional when ordering enabled
+    if (ENABLE_ORDERING) {
+      const success = addToCart(item, {
+        selectedSize: item.sizes?.[0] || null,
+        selectedToppings: [],
+        selectedAddOns: [],
+        quantity: 1
+      });
+      
+      if (success) {
+        console.log(`Added ${item.name} to cart`);
+      }
     }
   }
 
@@ -128,7 +148,19 @@
       <h1 class="text-4xl font-bold text-white mb-2">
         {getRestaurantName()}
       </h1>
-      <p class="text-primos-gold-500">Our signature hand-tossed pizzas and more</p>
+      <p class="text-primos-gold-500 mb-2">Our signature hand-tossed pizzas and more</p>
+      
+      {#if !ENABLE_ORDERING}
+        <div class="mt-4 p-4 bg-[#F4F2EB] border border-gray-300 mx-auto max-w-md relative overflow-hidden">
+          <!-- Noise overlay -->
+          <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+          <div class="relative z-10 text-center">
+            <p class="font-medium mb-1 text-gray-900">🍕 Digital Menu</p>
+            <p class="text-sm text-gray-700">For ordering, please call: <strong class="text-primos-blue-500">(586) 731-1122</strong></p>
+            <p class="text-xs mt-1 text-gray-600">Prices subject to change</p>
+          </div>
+        </div>
+      {/if}
     </header>
 
     <!-- Search Bar -->
@@ -145,69 +177,11 @@
       </div>
     </div>
 
-    <!-- Sticky Categories -->
-    <div class="sticky top-16 z-50 bg-primos-blue-500">
-      <div class="container mx-auto">
-        <div class="bg-[#F4F2EB] border border-gray-300 relative overflow-visible">
-          <!-- Ornamental corner diamonds -->
-          <div class="absolute -top-[5px] -left-[6px] w-2 h-2 bg-[#F4F2EB] border border-gray-400/50 transform rotate-45 z-[70]"></div>
-          <div class="absolute -top-[5px] -right-[6px] w-2 h-2 bg-[#F4F2EB] border border-gray-400/50 transform rotate-45 z-[70]"></div>
-          
+    <!-- Enhanced Category Navigation -->
+    <CategoryNavigation />
 
-          
-          <!-- Ornamental lines -->
-          
-          <!-- Vertical lines going up from diamonds to top of page -->
-          <div class="absolute -top-1 -left-0.5 w-px bg-amber-300/40 z-10" style="height: 100vh; top: -100vh;"></div>
-          <div class="absolute -top-1 -right-0.5 w-px bg-amber-300/40 z-10" style="height: 100vh; top: -100vh;"></div>
-          
-          <!-- Horizontal lines extending to browser edges -->
-          <div class="absolute -top-px left-1 h-px bg-amber-300/40 z-20" style="width: 100vw; margin-left: -50vw; left: 50%;"></div>
-          <div class="absolute -top-px right-1 h-px bg-amber-300/40 z-20" style="width: 100vw; margin-right: -50vw; right: 50%;"></div>
-          
-          <!-- Noise overlay -->
-          <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
-          <div class="relative z-10">
-            <div class="flex overflow-x-auto scrollbar-hide">
-              <div class="flex-shrink-0 border-r border-gray-300">
-                <button
-                  class={`w-full px-4 py-3 text-sm font-medium transition-colors duration-200 whitespace-nowrap relative overflow-hidden ${
-                    selectedCategory() === 'all' 
-                      ? 'bg-primos-gold-500 text-primos-blue-900' 
-                      : 'bg-transparent text-gray-700 hover:bg-gray-200'
-                  }`}
-                  onclick={() => handleCategorySelect('all')}
-                >
-                  {#if selectedCategory() === 'all'}
-                    <!-- Noise overlay for selected state -->
-                    <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
-                  {/if}
-                  <span class="relative z-10">All Items ({menuStats().totalItems})</span>
-                </button>
-              </div>
-              {#each availableCategories() as category}
-                <div class="flex-shrink-0 border-r border-gray-300 last:border-r-0">
-                  <button
-                    class={`w-full px-4 py-3 text-sm font-medium transition-colors duration-200 whitespace-nowrap relative overflow-hidden ${
-                      selectedCategory() === category.id 
-                        ? 'bg-primos-gold-500 text-primos-blue-900' 
-                        : 'bg-transparent text-gray-700 hover:bg-gray-200'
-                    }`}
-                    onclick={() => handleCategorySelect(category.id)}
-                  >
-                    {#if selectedCategory() === category.id}
-                      <!-- Noise overlay for selected state -->
-                      <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
-                    {/if}
-                    <span class="relative z-10">{category.name} ({category.items.filter(isItemAvailable).length})</span>
-                  </button>
-                </div>
-              {/each}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Sticky Horizontal Navigation -->
+    <HorizontalScrollNavigation />
 
     <!-- View Controls and Stats -->
     <div class="bg-[#F4F2EB] border border-gray-300 relative overflow-hidden">
@@ -259,28 +233,60 @@
         </div>
     </div>
 
-    <!-- Enhanced Menu Display -->
+    <!-- Enhanced Menu Display with Category Sections -->
     <div class="min-h-[400px]">
-      {#if viewMode() === 'grid'}
-        <!-- Grid View - Paper Menu Style -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB]">
-          {#each filteredMenuItems() as item, index (item.id)}
-            <div class="relative border-r border-b border-gray-300 last:border-r-0 last:border-b-0 sm:last:border-r-0 sm:last:border-b-0 lg:last:border-r-0 lg:last:border-b-0 xl:last:border-r-0 xl:last:border-b-0">
-              <MenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
-            </div>
-          {/each}
-        </div>
+      {#if selectedCategory() === 'all'}
+        <!-- Show all categories with section headers -->
+        {#each availableCategories() as category (category.id)}
+          <CategorySection {category}>
+            {#snippet children()}
+              {#if viewMode() === 'grid'}
+                <!-- Grid View - Paper Menu Style -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB] rounded-lg">
+                  {#each category.items.filter(isItemAvailable) as item (item.id)}
+                    <div class="relative border-r border-b border-gray-300 last:border-r-0 last:border-b-0 sm:last:border-r-0 sm:last:border-b-0 lg:last:border-r-0 lg:last:border-b-0 xl:last:border-r-0 xl:last:border-b-0">
+                      <MenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
+                    </div>
+                  {/each}
+                </div>
+              {:else}
+                <!-- List View -->
+                <div class="bg-[#F4F2EB] border border-gray-300 overflow-hidden relative rounded-lg">
+                  <!-- Noise overlay -->
+                  <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none z-0"></div>
+                  <div class="relative z-10 divide-y divide-gray-300">
+                    {#each category.items.filter(isItemAvailable) as item (item.id)}
+                      <ListMenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
+                    {/each}
+                  </div>
+                </div>
+              {/if}
+            {/snippet}
+          </CategorySection>
+        {/each}
       {:else}
-        <!-- List View -->
-        <div class="bg-[#F4F2EB] border border-gray-300 overflow-hidden relative">
-          <!-- Noise overlay -->
-          <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none z-0"></div>
-          <div class="relative z-10 divide-y divide-gray-300">
-            {#each filteredMenuItems() as item (item.id)}
-              <ListMenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
+        <!-- Show single category without section header -->
+        {#if viewMode() === 'grid'}
+          <!-- Grid View - Paper Menu Style -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB] rounded-lg">
+            {#each filteredMenuItems() as item, index (item.id)}
+              <div class="relative border-r border-b border-gray-300 last:border-r-0 last:border-b-0 sm:last:border-r-0 sm:last:border-b-0 lg:last:border-r-0 lg:last:border-b-0 xl:last:border-r-0 xl:last:border-b-0">
+                <MenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
+              </div>
             {/each}
           </div>
-        </div>
+        {:else}
+          <!-- List View -->
+          <div class="bg-[#F4F2EB] border border-gray-300 overflow-hidden relative rounded-lg">
+            <!-- Noise overlay -->
+            <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none z-0"></div>
+            <div class="relative z-10 divide-y divide-gray-300">
+              {#each filteredMenuItems() as item (item.id)}
+                <ListMenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
+              {/each}
+            </div>
+          </div>
+        {/if}
       {/if}
 
       <!-- Enhanced Empty State -->

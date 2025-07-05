@@ -1,4 +1,11 @@
 import { menuLoader } from '../utils/menu-loader.js';
+import { 
+  POS_CATEGORIES, 
+  getPOSCategory, 
+  getItemsForPOSCategory, 
+  isPOSCategory,
+  convertToPOSCategories 
+} from '../utils/pos-category-mapping.js';
 
 /**
  * @typedef {import('../types/menu.js').MenuData} MenuData
@@ -22,6 +29,7 @@ function createMenuStore() {
   let searchQuery = $state('');
   let selectedCategory = $state('all');
   let viewMode = $state('grid');
+  let usePOSCategories = $state(true); // Enable POS category view by default
 
   // Debounced search query for performance
   let debouncedSearchQuery = $state('');
@@ -72,6 +80,13 @@ function createMenuStore() {
     viewMode = mode;
   }
 
+  // POS category mode toggle
+  function togglePOSCategories(enabled) {
+    usePOSCategories = enabled;
+    // Reset category selection when switching modes
+    selectedCategory = 'all';
+  }
+
   // Derived state for all menu items with category info
   const allMenuItems = $derived(() => {
     if (!menuData) return [];
@@ -85,6 +100,26 @@ function createMenuStore() {
     );
   });
 
+  // Derived state for available categories (original or POS)
+  const availableCategories = $derived(() => {
+    if (!menuData) return [];
+    
+    if (usePOSCategories) {
+      // For POS categories, we need to include items for the filter count
+      const allItems = allMenuItems();
+      return POS_CATEGORIES.map(category => ({
+        id: category.id,
+        name: category.name,
+        description: category.description,
+        items: getItemsForPOSCategory(allItems, category.id)
+      }));
+    } else {
+      return menuData.categories.filter((category) => 
+        category.items.some((item) => item.available)
+      );
+    }
+  });
+
   // Derived state for filtered menu items
   const filteredMenuItems = $derived(() => {
     console.log('🔄 Filtering: Starting with debouncedSearchQuery:', debouncedSearchQuery, 'selectedCategory:', selectedCategory);
@@ -94,10 +129,17 @@ function createMenuStore() {
     let items = allMenuItems();
     console.log('🔄 Filtering: Starting with', items.length, 'total items');
     
-    // Filter by category
+    // Filter by category (handle both original and POS categories)
     if (selectedCategory !== 'all') {
-      items = items.filter((item) => item.categoryId === selectedCategory);
-      console.log('🔄 Filtering: After category filter:', items.length, 'items');
+      if (usePOSCategories && isPOSCategory(selectedCategory)) {
+        // Filter by POS category
+        items = getItemsForPOSCategory(items, selectedCategory);
+        console.log('🔄 Filtering: After POS category filter:', items.length, 'items');
+      } else {
+        // Filter by original category
+        items = items.filter((item) => item.categoryId === selectedCategory);
+        console.log('🔄 Filtering: After original category filter:', items.length, 'items');
+      }
     }
     
     // Filter by search query (debounced)
@@ -128,14 +170,6 @@ function createMenuStore() {
     return finalItems;
   });
 
-  // Derived state for available categories
-  const availableCategories = $derived(() => {
-    if (!menuData) return [];
-    
-    return menuData.categories.filter((category) => 
-      category.items.some((item) => item.available)
-    );
-  });
 
   // Derived state for filtered categories (for category view)
   const filteredCategories = $derived(() => {
@@ -232,6 +266,7 @@ function createMenuStore() {
     get searchQuery() { return searchQuery; },
     get selectedCategory() { return selectedCategory; },
     get viewMode() { return viewMode; },
+    get usePOSCategories() { return usePOSCategories; },
     get debouncedSearchQuery() { return debouncedSearchQuery; },
     get allMenuItems() { return allMenuItems(); },
     get filteredMenuItems() { return filteredMenuItems(); },
@@ -245,6 +280,7 @@ function createMenuStore() {
     updateSearchQuery,
     selectCategory,
     setViewMode,
+    togglePOSCategories,
     getMenuItemById,
     getCategoryById,
     resetFilters,
@@ -262,6 +298,7 @@ export const error = () => menu.error;
 export const searchQuery = () => menu.searchQuery;
 export const selectedCategory = () => menu.selectedCategory;
 export const viewMode = () => menu.viewMode;
+export const usePOSCategories = () => menu.usePOSCategories;
 export const debouncedSearchQuery = () => menu.debouncedSearchQuery;
 export const allMenuItems = () => menu.allMenuItems;
 export const filteredMenuItems = () => menu.filteredMenuItems;
@@ -276,6 +313,7 @@ export const {
   updateSearchQuery,
   selectCategory,
   setViewMode,
+  togglePOSCategories,
   getMenuItemById,
   getCategoryById,
   resetFilters,

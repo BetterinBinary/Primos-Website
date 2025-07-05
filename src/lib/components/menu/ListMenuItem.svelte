@@ -1,6 +1,7 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { Button } from '../ui/index.js';
+  import { ENABLE_ORDERING, ENABLE_CUSTOMIZATION } from '$lib/config/features.js';
   import type { MenuItem, Size, Topping, AddOn } from '$lib/types/menu';
 
   export let item: MenuItem;
@@ -14,12 +15,13 @@
   }) => void;
 
   let showCustomizer = false;
+  let imageError = false;
   let selectedSize: Size | null = item.sizes?.[0] || null;
   let selectedToppings: Topping[] = [];
   let selectedAddOns: AddOn[] = [];
   let quantity = 1;
 
-  const hasCustomizations = (item.sizes && item.sizes.length > 1) || (item.toppings?.extraItems && item.toppings.extraItems.length > 0);
+  const hasCustomizations = ENABLE_CUSTOMIZATION && ((item.sizes && item.sizes.length > 1) || (item.toppings?.extraItems && item.toppings.extraItems.length > 0));
 
   const basePrice = selectedSize ? selectedSize.price : item.basePrice || 0;
   const toppingsPrice = selectedToppings.reduce((sum, topping) => sum + 0, 0);
@@ -70,52 +72,104 @@
     onAddToCart(item, options);
     showCustomizer = false;
   }
+
+  function handleImageError() {
+    imageError = true;
+  }
+
+  /**
+   * Format price display for the price area
+   * Returns object with all individual prices for vertical display
+   * Null-safe to handle malformed price data
+   */
+  function formatPriceDisplay(item: MenuItem): { single: string | null, allPrices: string[], fallback: string | null } {
+    if (item.sizes && item.sizes.length > 0) {
+      if (item.sizes.length === 1) {
+        const price = item.sizes[0]?.price;
+        if (price != null && !isNaN(price)) {
+          return { single: `$${price.toFixed(2)}`, allPrices: [], fallback: null };
+        }
+      } else {
+        // Get all valid prices with their size info, maintain original order
+        const allPrices = item.sizes
+          .filter(size => size?.price != null && !isNaN(size.price))
+          .map(size => `$${size.price.toFixed(2)}`);
+        
+        if (allPrices.length === 0) {
+          return { single: null, allPrices: [], fallback: 'Price varies' };
+        }
+        
+        if (allPrices.length === 1) {
+          return { single: allPrices[0], allPrices: [], fallback: null };
+        } else {
+          return { single: null, allPrices: allPrices, fallback: null };
+        }
+      }
+    } else if (item.basePrice != null && !isNaN(item.basePrice)) {
+      return { single: `$${item.basePrice.toFixed(2)}`, allPrices: [], fallback: null };
+    }
+    
+    return { single: null, allPrices: [], fallback: 'Price varies' };
+  }
 </script>
 
 <div class="relative flex items-start gap-4 px-4 py-6">
   <!-- Noise overlay -->
-  <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
-  <div class="relative z-10 flex-shrink-0 w-20 h-20 flex items-center justify-center bg-gray-200">
-    {#if item.image}
-      <img src="/images/menu/{item.image}" alt="{item.name} from Primos Pizza" class="w-full h-full object-cover" />
-    {:else}
-      <span class="text-gray-400 text-2xl">🍕</span>
-    {/if}
-  </div>
+  <div class="absolute inset-0 bg-[url('/optimized/noise-tile.webp')] bg-repeat opacity-15 mix-blend-multiply pointer-events-none" style="background-size: 256px 256px;"></div>
+  
   <div class="relative z-10 flex-1 flex flex-col min-w-0">
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
       <div class="min-w-0 flex-1">
-        <h3 class="font-semibold text-lg text-gray-900 truncate">{item.name}</h3>
+        <h3 class="font-bold text-lg text-black mb-1 font-sans">{item.name}</h3>
         <p class="text-xs text-gray-600 mb-1 truncate">{item.category.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</p>
         <p class="text-gray-800 text-sm leading-relaxed line-clamp-2">{item.description}</p>
       </div>
       <div class="flex flex-col sm:flex-col sm:items-end gap-2 sm:ml-4">
-        <span class="font-bold text-lg text-primos-red-600 text-center sm:text-right">${item.basePrice || item.sizes?.[0]?.price || 0}</span>
-        <div class="flex flex-col sm:flex-col gap-2">
-          <Button
-            variant="primary"
-            size="sm"
-            class="w-full sm:w-auto"
-            onclick={handleQuickAdd}
-          >
-            Add to Cart
-          </Button>
-          {#if hasCustomizations}
-            <Button
-              variant="outline"
-              size="sm"
-              class="w-full sm:w-auto"
-              onclick={() => showCustomizer = !showCustomizer}
-              aria-expanded={showCustomizer}
-              aria-controls="customizer-{item.id}"
-            >
-              {showCustomizer ? 'Hide Options' : 'Customize'}
-            </Button>
+        <!-- Price display (right side, top aligned) -->
+        <div class="relative z-10 flex-shrink-0 flex flex-col items-end justify-start">
+          {#if formatPriceDisplay(item).single}
+            <span class="text-base font-bold text-black font-sans leading-tight">
+              {formatPriceDisplay(item).single}
+            </span>
+          {:else if formatPriceDisplay(item).allPrices.length > 0}
+            {#each formatPriceDisplay(item).allPrices as price}
+              <span class="text-base font-bold text-black font-sans leading-tight">
+                {price}
+              </span>
+            {/each}
+          {:else if formatPriceDisplay(item).fallback}
+            <span class="text-sm font-bold text-black font-sans leading-tight">
+              {formatPriceDisplay(item).fallback}
+            </span>
           {/if}
         </div>
+        {#if ENABLE_ORDERING}
+          <div class="flex flex-col sm:flex-col gap-2">
+            <Button
+              variant="primary"
+              size="sm"
+              class="w-full sm:w-auto"
+              onclick={handleQuickAdd}
+            >
+              Add to Cart
+            </Button>
+            {#if hasCustomizations}
+              <Button
+                variant="outline"
+                size="sm"
+                class="w-full sm:w-auto"
+                onclick={() => showCustomizer = !showCustomizer}
+                aria-expanded={showCustomizer}
+                aria-controls="customizer-{item.id}"
+              >
+                {showCustomizer ? 'Hide Options' : 'Customize'}
+              </Button>
+            {/if}
+          </div>
+        {/if}
       </div>
     </div>
-    {#if showCustomizer}
+    {#if showCustomizer && ENABLE_CUSTOMIZATION}
       <div id="customizer-{item.id}" class="mt-4" transition:slide>
         <div class="space-y-4 border-t border-gray-200 pt-4">
           <!-- Size Selection -->
@@ -190,7 +244,7 @@
           </div>
           <!-- Price Summary -->
           <div class="bg-[#F4F2EB] p-3 relative overflow-hidden">
-            <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
+            <div class="absolute inset-0 bg-[url('/optimized/noise-tile.webp')] bg-repeat opacity-15 mix-blend-multiply pointer-events-none" style="background-size: 256px 256px;"></div>
             <div class="relative z-10">
               <div class="flex justify-between items-center">
                 <span class="text-sm text-gray-600">Base Price × {quantity}</span>
