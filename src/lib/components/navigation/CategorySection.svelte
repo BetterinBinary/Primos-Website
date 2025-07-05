@@ -77,7 +77,7 @@
     display: flex;
     align-items: center;
     padding: 0 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 0;
     overflow: hidden;
   }
 
@@ -143,7 +143,7 @@
     .category-section-header {
       height: 3.5rem;
       padding: 0 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0;
     }
 
     .category-title {
@@ -157,7 +157,7 @@
 
     .category-section {
       scroll-margin-top: 6rem;
-      margin-bottom: 2rem;
+      margin-bottom: 0;
     }
   }
 
@@ -165,7 +165,7 @@
     .category-section-header {
       height: 3rem;
       padding: 0 0.75rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0;
     }
 
     .category-title {
