@@ -1,5 +1,5 @@
 <script>
-  import { availableCategories, selectedCategory, selectCategory } from '$lib/stores/menu-store.svelte.js';
+  import { availableCategories, selectedCategory, selectCategory, loading, menuData } from '$lib/stores/menu-store.svelte.js';
   import { navigationState, scrollToCategory } from '$lib/stores/navigation-store.svelte.js';
 
   /**
@@ -15,6 +15,16 @@
     console.log('🧭 CategoryNavigation: received categories =', cats);
     console.log('🧭 CategoryNavigation: categories length =', cats?.length || 0);
     return cats || [];
+  });
+
+  // Debug states
+  const debugInfo = $derived(() => {
+    return {
+      loading: loading(),
+      hasMenuData: !!menuData(),
+      categoriesCount: categories.length,
+      selectedCategory: selectedCategory()
+    };
   });
 
   // Handle category selection
@@ -33,54 +43,108 @@
   }
 </script>
 
-<!-- Desktop Multi-line Layout -->
-<nav class="category-nav-desktop" aria-label="Menu categories">
-  <div class="category-grid">
-    {#each categories as category (category.id)}
-      {@const categoryInfo = getCategoryInfo(category)}
-      <button
-        type="button"
-        class="category-button"
-        class:active={selectedCategory === category.id}
-        data-category={category.id}
-        onclick={() => handleCategoryClick(category.id)}
-        aria-pressed={selectedCategory === category.id}
-        aria-label="View {categoryInfo.name} menu items ({categoryInfo.count} items)"
-      >
-        <span class="category-name">{categoryInfo.name}</span>
-        <span class="category-count">({categoryInfo.count})</span>
-      </button>
-    {/each}
+<!-- Debug Info (visible during development) -->
+{#if debugInfo.loading}
+  <div class="category-nav-debug">
+    <div class="debug-message loading">
+      <span>📂 Loading categories...</span>
+    </div>
   </div>
-</nav>
+{:else if !debugInfo.hasMenuData}
+  <div class="category-nav-debug">
+    <div class="debug-message error">
+      <span>❌ No menu data available</span>
+    </div>
+  </div>
+{:else if debugInfo.categoriesCount === 0}
+  <div class="category-nav-debug">
+    <div class="debug-message warning">
+      <span>⚠️ No categories found (count: {debugInfo.categoriesCount})</span>
+    </div>
+  </div>
+{:else}
+  <!-- Desktop Multi-line Layout -->
+  <nav class="category-nav-desktop" aria-label="Menu categories">
+    <div class="category-grid">
+      {#each categories as category (category.id)}
+        {@const categoryInfo = getCategoryInfo(category)}
+        <button
+          type="button"
+          class="category-button"
+          class:active={selectedCategory() === category.id}
+          data-category={category.id}
+          onclick={() => handleCategoryClick(category.id)}
+          aria-pressed={selectedCategory() === category.id}
+          aria-label="View {categoryInfo.name} menu items ({categoryInfo.count} items)"
+        >
+          <span class="category-name">{categoryInfo.name}</span>
+          <span class="category-count">({categoryInfo.count})</span>
+        </button>
+      {/each}
+    </div>
+  </nav>
 
-<!-- Mobile Horizontal Scroll Layout -->
-<nav class="category-nav-mobile" aria-label="Menu categories">
-  <div class="category-scroll-container">
-    {#each categories as category (category.id)}
-      {@const categoryInfo = getCategoryInfo(category)}
-      <button
-        type="button"
-        class="category-button-mobile"
-        class:active={selectedCategory === category.id}
-        data-category={category.id}
-        onclick={() => handleCategoryClick(category.id)}
-        aria-pressed={selectedCategory === category.id}
-        aria-label="View {categoryInfo.name} menu items ({categoryInfo.count} items)"
-      >
-        <span class="category-name">{categoryInfo.name}</span>
-        <span class="category-count">({categoryInfo.count})</span>
-      </button>
-    {/each}
-  </div>
-</nav>
+  <!-- Mobile Horizontal Scroll Layout -->
+  <nav class="category-nav-mobile" aria-label="Menu categories">
+    <div class="category-scroll-container">
+      {#each categories as category (category.id)}
+        {@const categoryInfo = getCategoryInfo(category)}
+        <button
+          type="button"
+          class="category-button-mobile"
+          class:active={selectedCategory() === category.id}
+          data-category={category.id}
+          onclick={() => handleCategoryClick(category.id)}
+          aria-pressed={selectedCategory() === category.id}
+          aria-label="View {categoryInfo.name} menu items ({categoryInfo.count} items)"
+        >
+          <span class="category-name">{categoryInfo.name}</span>
+          <span class="category-count">({categoryInfo.count})</span>
+        </button>
+      {/each}
+    </div>
+  </nav>
+{/if}
 
 <style>
+  /* Debug Styles */
+  .category-nav-debug {
+    display: block;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f3f4f6;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+  }
+
+  .debug-message {
+    text-align: center;
+    font-weight: 600;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .debug-message.loading {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  .debug-message.error {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  .debug-message.warning {
+    background: #fef3c7;
+    color: #d97706;
+  }
+
   /* Desktop Multi-line Layout */
   .category-nav-desktop {
     display: block;
     width: 100%;
-    margin-bottom: 0;
+    margin-bottom: 1.5rem;
   }
 
   .category-grid {
@@ -163,7 +227,7 @@
   .category-nav-mobile {
     display: none;
     width: 100%;
-    margin-bottom: 0;
+    margin-bottom: 1.5rem;
   }
 
   .category-scroll-container {

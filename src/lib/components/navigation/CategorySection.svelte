@@ -67,7 +67,6 @@
 <style>
   .category-section {
     scroll-margin-top: 8rem; /* Account for sticky navigation */
-    margin-bottom: 3rem;
   }
 
   .category-section-header {

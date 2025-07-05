@@ -184,7 +184,7 @@
     <HorizontalScrollNavigation />
 
     <!-- View Controls and Stats -->
-    <div class="bg-[#F4F2EB] border border-gray-300 relative overflow-hidden">
+    <div class="bg-[#F4F2EB] border border-gray-300 relative overflow-hidden mt-0">
         <!-- Noise overlay -->
         <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none"></div>
         <div class="relative z-10">
@@ -234,7 +234,7 @@
     </div>
 
     <!-- Enhanced Menu Display with Category Sections -->
-    <div class="min-h-[400px]">
+    <div class="min-h-[400px] mt-0">
       {#if selectedCategory() === 'all'}
         <!-- Show all categories with section headers -->
         {#each availableCategories() as category (category.id)}
