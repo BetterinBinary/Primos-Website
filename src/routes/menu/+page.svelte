@@ -242,7 +242,7 @@
             {#snippet children()}
               {#if viewMode() === 'grid'}
                 <!-- Grid View - Paper Menu Style -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB] rounded-lg">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB]">
                   {#each category.items.filter(isItemAvailable) as item (item.id)}
                     <div class="relative border-r border-b border-gray-300 last:border-r-0 last:border-b-0 sm:last:border-r-0 sm:last:border-b-0 lg:last:border-r-0 lg:last:border-b-0 xl:last:border-r-0 xl:last:border-b-0">
                       <MenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
@@ -251,7 +251,7 @@
                 </div>
               {:else}
                 <!-- List View -->
-                <div class="bg-[#F4F2EB] border border-gray-300 overflow-hidden relative rounded-lg">
+                <div class="bg-[#F4F2EB] border border-gray-300 overflow-hidden relative">
                   <!-- Noise overlay -->
                   <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none z-0"></div>
                   <div class="relative z-10 divide-y divide-gray-300">
@@ -268,7 +268,7 @@
         <!-- Show single category without section header -->
         {#if viewMode() === 'grid'}
           <!-- Grid View - Paper Menu Style -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB] rounded-lg">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-0 border border-gray-300 overflow-hidden bg-[#F4F2EB]">
             {#each filteredMenuItems() as item, index (item.id)}
               <div class="relative border-r border-b border-gray-300 last:border-r-0 last:border-b-0 sm:last:border-r-0 sm:last:border-b-0 lg:last:border-r-0 lg:last:border-b-0 xl:last:border-r-0 xl:last:border-b-0">
                 <MenuItemWithIgnore item={item} onAddToCart={handleAddToCart} />
@@ -277,7 +277,7 @@
           </div>
         {:else}
           <!-- List View -->
-          <div class="bg-[#F4F2EB] border border-gray-300 overflow-hidden relative rounded-lg">
+          <div class="bg-[#F4F2EB] border border-gray-300 overflow-hidden relative">
             <!-- Noise overlay -->
             <div class="absolute inset-0 bg-[url('/noise.png')] bg-fit bg-repeat opacity-15 mix-blend-multiply pointer-events-none z-0"></div>
             <div class="relative z-10 divide-y divide-gray-300">

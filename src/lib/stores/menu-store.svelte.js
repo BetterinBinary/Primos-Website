@@ -102,21 +102,38 @@ function createMenuStore() {
 
   // Derived state for available categories (original or POS)
   const availableCategories = $derived(() => {
-    if (!menuData) return [];
+    console.log('🏪 availableCategories: menuData =', menuData);
+    console.log('🏪 availableCategories: usePOSCategories =', usePOSCategories);
+    
+    if (!menuData) {
+      console.log('🏪 availableCategories: No menuData, returning empty array');
+      return [];
+    }
     
     if (usePOSCategories) {
       // For POS categories, we need to include items for the filter count
       const allItems = allMenuItems();
-      return POS_CATEGORIES.map(category => ({
-        id: category.id,
-        name: category.name,
-        description: category.description,
-        items: getItemsForPOSCategory(allItems, category.id)
-      }));
+      console.log('🏪 availableCategories: All items count =', allItems.length);
+      
+      const categories = POS_CATEGORIES.map(category => {
+        const items = getItemsForPOSCategory(allItems, category.id);
+        console.log(`🏪 availableCategories: ${category.name} has ${items.length} items`);
+        return {
+          id: category.id,
+          name: category.name,
+          description: category.description,
+          items: items
+        };
+      });
+      
+      console.log('🏪 availableCategories: Final POS categories =', categories);
+      return categories;
     } else {
-      return menuData.categories.filter((category) => 
+      const originalCategories = menuData.categories.filter((category) => 
         category.items.some((item) => item.available)
       );
+      console.log('🏪 availableCategories: Original categories =', originalCategories);
+      return originalCategories;
     }
   });
 

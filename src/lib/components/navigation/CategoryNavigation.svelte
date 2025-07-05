@@ -12,6 +12,8 @@
   // Get categories for display
   const categories = $derived(() => {
     const cats = availableCategories();
+    console.log('🧭 CategoryNavigation: received categories =', cats);
+    console.log('🧭 CategoryNavigation: categories length =', cats?.length || 0);
     return cats || [];
   });
 
@@ -78,7 +80,7 @@
   .category-nav-desktop {
     display: block;
     width: 100%;
-    margin-bottom: 2rem;
+    margin-bottom: 0;
   }
 
   .category-grid {
@@ -161,7 +163,7 @@
   .category-nav-mobile {
     display: none;
     width: 100%;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
   }
 
   .category-scroll-container {

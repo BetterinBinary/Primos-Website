@@ -25,12 +25,17 @@
   });
 
   // Get category info for display
-  const categoryInfo = $derived(() => ({
-    id: category?.id || '',
-    name: category?.name || 'Category',
-    description: category?.description || '',
-    itemCount: category?.items?.length || 0
-  }));
+  const categoryInfo = $derived(() => {
+    console.log('📁 CategorySection: received category =', category);
+    const info = {
+      id: category?.id || '',
+      name: category?.name || 'Category',
+      description: category?.description || '',
+      itemCount: category?.items?.length || 0
+    };
+    console.log('📁 CategorySection: computed categoryInfo =', info);
+    return info;
+  });
 </script>
 
 <!-- Category Section Container -->
@@ -74,7 +79,6 @@
     padding: 0 2rem;
     margin-bottom: 2rem;
     overflow: hidden;
-    border-radius: 0.5rem;
   }
 
   /* Noise texture overlay */
