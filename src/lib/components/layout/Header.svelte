@@ -40,8 +40,11 @@
       <!-- Logo -->
       <div class="flex-shrink-0">
         <a href="/" class="flex items-center space-x-2">
-          <div class="w-10 h-10 bg-primos-gold-500 rounded-full flex items-center justify-center">
-            <span class="text-primos-blue-500 font-bold text-xl">P</span>
+          <div class="w-10 h-10 flex flex-col items-center justify-center">
+            <!-- Chef Hat -->
+            <img src="/hat.svg" alt="Chef Hat" class="w-6 h-4 mb-0.5" />
+            <!-- Mustache -->
+            <img src="/m.svg" alt="Mustache" class="w-6 h-2" />
           </div>
           <span class="font-display text-xl font-bold">Primo's Pizza</span>
         </a>
