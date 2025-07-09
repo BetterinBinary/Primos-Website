@@ -39,14 +39,18 @@
     <nav class="flex items-center justify-between h-16">
       <!-- Logo -->
       <div class="flex-shrink-0">
-        <a href="/" class="flex items-center space-x-2">
-          <div class="w-10 h-10 flex flex-col items-center justify-center">
+        <a href="/" class="flex items-center justify-center">
+          <div class="flex flex-col items-center justify-center py-1">
             <!-- Chef Hat -->
-            <img src="/hat.svg" alt="Chef Hat" class="w-6 h-4 mb-0.5" />
+            <img src="/hat.svg" alt="Chef Hat" class="w-6 h-4" />
+            <!-- Brand Text -->
+            <div class="text-center py-0.5 leading-none">
+              <div class="font-display text-[8px] font-bold text-primos-red-600 uppercase tracking-wide">Primo's</div>
+              <div class="font-display text-[8px] font-bold text-primos-red-600 uppercase tracking-wide">Pizza</div>
+            </div>
             <!-- Mustache -->
             <img src="/m.svg" alt="Mustache" class="w-6 h-2" />
           </div>
-          <span class="font-display text-xl font-bold">Primo's Pizza</span>
         </a>
       </div>
 

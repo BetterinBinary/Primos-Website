@@ -10,13 +10,18 @@
   "icons": [
     {
       "src": "/favicon.png",
-      "sizes": "128x128",
+      "sizes": "108x90",
       "type": "image/png"
     },
     {
       "src": "/favicon.ico",
       "sizes": "16x16 32x32",
       "type": "image/x-icon"
+    },
+    {
+      "src": "/favicon-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "categories": ["food", "restaurant"],
